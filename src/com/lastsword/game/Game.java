@@ -3,16 +3,16 @@ package com.lastsword.game;
 import com.lastsword.audio.AudioPlayer;
 import com.lastsword.graphics.Animation;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 
 public class Game {
     private GameWindow gameWindow;
     private GamePanel gamePanel;
     private AudioPlayer audioPlayer;
-    private Animation animation;
-    private boolean isRunning;
-    private int frameRate;
-
 
     public Game(){
         gamePanel = new GamePanel();
