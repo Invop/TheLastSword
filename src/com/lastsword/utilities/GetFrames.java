@@ -1,6 +1,8 @@
 package com.lastsword.utilities;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +34,27 @@ public class GetFrames {
         }
         return null;
     }
+    public static List<BufferedImage> scaleImages(List<BufferedImage> images, double scale) {
+        List<BufferedImage> scaledImages = new ArrayList<>();
 
+        for (BufferedImage image : images) {
+            double scaledWidth = image.getWidth() * scale;
+            double scaledHeight = image.getHeight() * scale;
+
+            BufferedImage scaledImage = new BufferedImage((int)scaledWidth, (int)scaledHeight, BufferedImage.TYPE_INT_ARGB);
+
+            Graphics2D graphics2D = scaledImage.createGraphics();
+            graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+            AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
+            graphics2D.drawImage(image, transform, null);
+            graphics2D.dispose();
+
+            scaledImages.add(scaledImage);
+        }
+
+        return scaledImages;
+    }
     private static List<BufferedImage> extractFrames(BufferedImage spriteSheet) {
         List<BufferedImage> frames = new ArrayList<>();
 
@@ -79,7 +101,6 @@ public class GetFrames {
         }
         return true;
     }
-
     private static boolean isTransparentColumn(BufferedImage image, int x) {
         for (int y = 0; y < image.getHeight(); y++) {
             if ((image.getRGB(x, y) & 0xFF000000) != 0) {
@@ -88,7 +109,6 @@ public class GetFrames {
         }
         return true;
     }
-
     private static boolean isSameColorColumn(BufferedImage image, int x, int referenceColor) {
         for (int y = 0; y < image.getHeight(); y++) {
             if (image.getRGB(x, y) != referenceColor) {

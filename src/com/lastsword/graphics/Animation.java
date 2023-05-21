@@ -10,10 +10,12 @@ public class Animation {
     private int currentFrameIndex;
     private long animationSpeed;
     private long lastFrameTime;
+    private boolean loop;
 
-    public Animation(List<BufferedImage> frames, long animationSpeed) {
+    public Animation(List<BufferedImage> frames, long animationSpeed, boolean loop) {
         this.frames = frames;
         this.animationSpeed = animationSpeed;
+        this.loop = loop;
         currentFrameIndex = 0;
         lastFrameTime = 0;
     }
@@ -24,7 +26,11 @@ public class Animation {
         if (currentTime - lastFrameTime > animationSpeed) {
             currentFrameIndex++;
             if (currentFrameIndex >= frames.size()) {
-                currentFrameIndex = 0;
+                if (loop) {
+                    currentFrameIndex = 0;
+                } else {
+                    currentFrameIndex = frames.size() - 1;
+                }
             }
             lastFrameTime = currentTime;
         }
