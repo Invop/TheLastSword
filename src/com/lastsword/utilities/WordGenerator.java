@@ -4,16 +4,15 @@ import java.util.Random;
 
 public class WordGenerator {
     private static final Random random = new Random();
+    private String word;
+    private int[] letterValues;
 
-    public static void main(String[] args) {
-        String word = generateWord(5);
-        int[] letterValues = convertWordToLetterValues(word);
-
-        System.out.println("Згенероване слово: " + word);
-        System.out.println("Масив чисел: " + java.util.Arrays.toString(letterValues));
+    public WordGenerator(int lenght){
+        word = generateWord(lenght);
+        letterValues = convertWordToLetterValues(word);
     }
 
-    public static String generateWord(int length) {
+    private static String generateWord(int length) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < length; i++) {
             char randomLetter = getRandomLetter();
@@ -22,7 +21,7 @@ public class WordGenerator {
         return sb.toString();
     }
 
-    public static int[] convertWordToLetterValues(String word) {
+    private static int[] convertWordToLetterValues(String word) {
         int[] letterValues = new int[word.length()];
         for (int i = 0; i < word.length(); i++) {
             char letter = word.charAt(i);
@@ -35,6 +34,10 @@ public class WordGenerator {
     private static char getRandomLetter() {
         int randomValue = random.nextInt(Letter.values().length);
         return Letter.values()[randomValue].getCharacter();
+    }
+
+    public int[] getLetterValues() {
+        return letterValues;
     }
 
     private enum Letter {
