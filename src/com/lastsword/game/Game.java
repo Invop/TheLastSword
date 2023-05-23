@@ -18,8 +18,8 @@ public class Game {
         gamePanel = new GamePanel();
         gameWindow = new GameWindow(gamePanel);
         gamePanel.requestFocus();
-        audioPlayer = new AudioPlayer("src/res/music/MainTheme.wav");
-        audioPlayer.loop();
+//        audioPlayer = new AudioPlayer("src/res/music/MainTheme.wav");
+//        audioPlayer.loop();
     }
 
 }
