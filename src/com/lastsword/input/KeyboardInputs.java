@@ -2,18 +2,21 @@ package com.lastsword.input;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.List;
+
+import com.lastsword.graphics.ButtonRenderer;
 import com.lastsword.utilities.Letter;
 
 public class KeyboardInputs implements KeyListener {
 
     private String wordToMatch;
     private int currentIndex;
+    private ButtonRenderer buttonRenderer;
 
-    public KeyboardInputs(String wordToMatch) {
+    public KeyboardInputs(String wordToMatch, ButtonRenderer buttonRenderer) {
         this.wordToMatch = wordToMatch;
+        this.buttonRenderer=buttonRenderer;
         this.currentIndex = 0;
+
     }
     @Override
     public void keyTyped(KeyEvent e) {
@@ -27,17 +30,21 @@ public class KeyboardInputs implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
 
-        char keyChar = e.getKeyChar();
-        for (Letter letter : Letter.values()) {
-            if (letter.getCharacter() == Character.toUpperCase(keyChar)) {
+        char keyChar = Character.toUpperCase(e.getKeyChar());
+
+        for (int i = 0; i < Letter.values().length; i++) {
+            Letter letter = Letter.values()[i];
+            if (letter.getCharacter() == keyChar) {
                 if (letter.getCharacter() == wordToMatch.charAt(currentIndex)) {
                     currentIndex++;
+                    buttonRenderer.updateImage(currentIndex - 1);
                     if (currentIndex == wordToMatch.length()) {
-                        System.out.println("correct");
+                        System.out.println("Правильно");
+
                         currentIndex = 0;
                     }
                 } else {
-                    System.out.println("wrong");
+                    System.out.println("Неправильно");
                     currentIndex = 0;
                 }
                 return;

@@ -60,9 +60,9 @@ public class GamePanel extends JPanel {
         //Перевірка букв
         wordGenerator = new WordGenerator(3);
         letterValues = wordGenerator.getLetterValues();
-        addKeyListener(keyboardInputs =new KeyboardInputs(wordGenerator.getWord()));
-        buttonRenderer = new ButtonRenderer(letterValues);
 
+        buttonRenderer = new ButtonRenderer(letterValues);
+        addKeyListener(keyboardInputs =new KeyboardInputs(wordGenerator.getWord(),buttonRenderer));
     }
 
     @Override
