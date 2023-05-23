@@ -1,58 +1,43 @@
 package com.lastsword.graphics;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.util.List;
 
 public class Animation {
 
-    private BufferedImage[] frames;  // Масив кадрів анімації
-    private int currentFrame;        // Поточний кадр
-    private int frameCount;          // Кількість кадрів
-    private int frameDelay;          // Затримка між кадрами
-    private int delayCounter;        // Лічильник затримки
-    private int x;                   // Координата X для малювання анімації
-    private int y;                   // Координата Y для малювання анімації
-    private int frameSpacing;        // Відстань між кадрами
-    private int frameHeight;         // Висота кадрів
+    private List<BufferedImage> frames;
+    private int currentFrameIndex;
+    private long animationSpeed;
+    private long lastFrameTime;
+    private boolean loop;
 
-    public Animation(int frameDelay, int x, int y, int frameSpacing, int frameHeight) {
-        this.frameDelay = frameDelay;
-        this.x = x;
-        this.y = y;
-        this.frameSpacing = frameSpacing;
-        this.frameHeight = frameHeight;
-        currentFrame = 0;
-        delayCounter = 0;
-    }
-
-    public void setFrames(BufferedImage[] frames) {
+    public Animation(List<BufferedImage> frames, long animationSpeed, boolean loop) {
         this.frames = frames;
-        frameCount = frames.length;
+        this.animationSpeed = animationSpeed;
+        this.loop = loop;
+        currentFrameIndex = 0;
+        lastFrameTime = 0;
     }
 
     public void update() {
-        if (frameCount > 1) {  // Якщо анімація складається з кількох кадрів
-            delayCounter++;
-            if (delayCounter >= frameDelay) {
-                currentFrame++;
-                if (currentFrame >= frameCount) {
-                    currentFrame = 0;
+        long currentTime = System.currentTimeMillis();
+
+        if (currentTime - lastFrameTime > animationSpeed) {
+            currentFrameIndex++;
+            if (currentFrameIndex >= frames.size()) {
+                if (loop) {
+                    currentFrameIndex = 0;
+                } else {
+                    currentFrameIndex = frames.size() - 1;
                 }
-                delayCounter = 0;
             }
+            lastFrameTime = currentTime;
         }
     }
 
-    public void draw(Graphics g) {
-        if (frameCount > 0) {
-            int frameX = x;
-            for (int i = 0; i < frameCount; i++) {
-                g.drawImage(frames[i], frameX, y, null);
-                frameX += frames[i].getWidth() + frameSpacing;
-            }
-        }
+    public void draw(Graphics g, int x, int y) {
+        BufferedImage currentFrame = frames.get(currentFrameIndex);
+        g.drawImage(currentFrame, x, y, null);
     }
 }
