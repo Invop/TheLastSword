@@ -3,6 +3,7 @@ package com.lastsword.input;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import com.lastsword.game.GamePanel;
 import com.lastsword.graphics.ButtonRenderer;
 import com.lastsword.utilities.Letter;
 
@@ -39,8 +40,7 @@ public class KeyboardInputs implements KeyListener {
                     currentIndex++;
                     buttonRenderer.updateImage(currentIndex - 1);
                     if (currentIndex == wordToMatch.length()) {
-                        System.out.println("Правильно");
-
+                        GamePanel.SetAnimationStart(true);
                         currentIndex = 0;
                     }
                 } else {

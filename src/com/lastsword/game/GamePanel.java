@@ -17,11 +17,15 @@ import static com.lastsword.utilities.GetFrames.scaleImages;
 
 
 public class GamePanel extends JPanel {
-    private Animation MainAnimation;
-    private Timer MainAnimation_timer;
+    private Animation attackAnimation;
+    private Timer attackAnimation_timer;
     private WordGenerator wordGenerator;
     private ButtonRenderer buttonRenderer;
     private  KeyboardInputs keyboardInputs;
+
+    private List<BufferedImage> attackFrames;
+
+    private static boolean AnimationStart = false;
 
     private static final int animationSpeed = 100;
     private int MainAnimation_delay = 100;
@@ -33,35 +37,10 @@ public class GamePanel extends JPanel {
         setBackground(Color.PINK);
         setSize(1280, 720);
         setFocusable(true);
-
-        //Додавання анімацій
-        GetFrames getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_archer/Attack_1.png");
-        List<BufferedImage> frames1 = scaleImages(getFrames1.FramesToList(),2);
-
-        GetFrames getFrames2 = new GetFrames("src/res/images/sprites/player/samurai_archer/Attack_2.png");
-        List<BufferedImage> frames2 = scaleImages(getFrames2.FramesToList(),2);
-
-        GetFrames getFrames3 = new GetFrames("src/res/images/sprites/player/samurai_archer/Attack_3.png");
-        List<BufferedImage> frames3 = scaleImages(getFrames3.FramesToList(),2);
-
-        List<BufferedImage> allFrames = new ArrayList<>();
-        allFrames.addAll(frames1);
-        allFrames.addAll(frames2);
-        allFrames.addAll(frames3);
-
-        //Виклик Анімацій
-        MainAnimation = new Animation(allFrames, animationSpeed, true);
-        MainAnimation_timer = new Timer(MainAnimation_delay, e -> {
-            MainAnimation.update();
-            repaint();
-        });
-        MainAnimation_timer.start();
-
-        //Перевірка букв
-        wordGenerator = new WordGenerator(3);
-        letterValues = wordGenerator.getLetterValues();
-
-        buttonRenderer = new ButtonRenderer(letterValues);
+        AddAttackFrames();
+        AddAnimations();
+        CreateTimers();
+        RenderRandomBtns();
         addKeyListener(keyboardInputs =new KeyboardInputs(wordGenerator.getWord(),buttonRenderer));
     }
 
@@ -72,8 +51,45 @@ public class GamePanel extends JPanel {
         int x = 100;
         int y = 100;
         buttonRenderer.draw(g,x+300,y+300);
-        MainAnimation.draw(g, x, y);
+
+        if(AnimationStart) {
+            attackAnimation.update();
+            attackAnimation.draw(g, x, y);
+        }
     }
+    private void RenderRandomBtns(){
+        wordGenerator = new WordGenerator(3);
+        letterValues = wordGenerator.getLetterValues();
+        buttonRenderer = new ButtonRenderer(letterValues);
+    }
+    private void AddAttackFrames(){
+        GetFrames getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_archer/Attack_1.png");
+        List<BufferedImage> frames1 = scaleImages(getFrames1.FramesToList(),2);
+
+        GetFrames getFrames2 = new GetFrames("src/res/images/sprites/player/samurai_archer/Attack_2.png");
+        List<BufferedImage> frames2 = scaleImages(getFrames2.FramesToList(),2);
+
+        GetFrames getFrames3 = new GetFrames("src/res/images/sprites/player/samurai_archer/Attack_3.png");
+        List<BufferedImage> frames3 = scaleImages(getFrames3.FramesToList(),2);
+
+        attackFrames = new ArrayList<>();
+        attackFrames.addAll(frames1);
+        attackFrames.addAll(frames2);
+        attackFrames.addAll(frames3);
+    }
+    private void CreateTimers(){
+        attackAnimation_timer = new Timer(MainAnimation_delay, e -> {
+            repaint();
+        });
+        attackAnimation_timer.start();
+    }
+    private void AddAnimations(){
+        attackAnimation = new Animation(attackFrames, animationSpeed, false);
+    }
+    public static void SetAnimationStart(boolean state){
+        AnimationStart=state;
+    }
+
 
 }
 
