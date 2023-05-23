@@ -2,6 +2,7 @@ package com.lastsword.game;
 
 import com.lastsword.audio.AudioPlayer;
 import com.lastsword.graphics.Animation;
+import com.lastsword.menu.CharacterSelectionMenu;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -16,7 +17,7 @@ public class Game {
 
     public Game(){
         gamePanel = new GamePanel();
-        gameWindow = new GameWindow(gamePanel);
+        gameWindow = new GameWindow(new CharacterSelectionMenu());
         gamePanel.requestFocus();
 //        audioPlayer = new AudioPlayer("src/res/music/MainTheme.wav");
 //        audioPlayer.loop();
