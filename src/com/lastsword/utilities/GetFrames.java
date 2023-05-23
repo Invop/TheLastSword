@@ -19,16 +19,7 @@ public class GetFrames {
     public List<BufferedImage> FramesToList(){
         try {
             BufferedImage spriteSheet = ImageIO.read(new File(filePath)); // Завантаження спрайт-аркуша
-
-            List<BufferedImage> frames = extractFrames(spriteSheet);
-
-            // Виведення отриманих кадрів
-            for (int i = 0; i < frames.size(); i++) {
-                BufferedImage frame = frames.get(i);
-                System.out.println("Кадр " + (i + 1) + ": ширина=" + frame.getWidth() + ", висота=" + frame.getHeight());
-            }
-
-            return frames;
+            return extractFrames(spriteSheet);
         } catch (IOException e) {
             e.printStackTrace();
         }
