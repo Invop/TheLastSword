@@ -5,14 +5,12 @@ import com.lastsword.utilities.GetFrames;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
 import static com.lastsword.utilities.GetFrames.scaleImages;
 
-public class CharacterSelectionMenu extends JPanel{
+public class CharacterSelectionMenuPanel extends JPanel{
     private List<BufferedImage> idleAnimationHero1;
     private List<BufferedImage> idleAnimationHero2;
     private List<BufferedImage> idleAnimationHero3;
@@ -26,7 +24,7 @@ public class CharacterSelectionMenu extends JPanel{
     private JButton nextButton;
     private JButton selectButton;
 
-    public CharacterSelectionMenu() {
+    public CharacterSelectionMenuPanel() {
         setLayout(new BorderLayout());
         CreateTimer();
         AddIdleFrames();
