@@ -37,13 +37,12 @@ public class GamePanel extends JPanel {
         setBackground(Color.PINK);
         setSize(1280, 720);
         setFocusable(true);
+        CreateTimers();
         AddAttackFrames();
         AddAnimations();
-        CreateTimers();
         RenderRandomBtns();
         addKeyListener(keyboardInputs =new KeyboardInputs(wordGenerator.getWord(),buttonRenderer));
     }
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
