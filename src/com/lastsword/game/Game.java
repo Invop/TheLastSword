@@ -1,26 +1,39 @@
 package com.lastsword.game;
 
 import com.lastsword.audio.AudioPlayer;
-import com.lastsword.graphics.Animation;
-import com.lastsword.menu.CharacterSelectionMenu;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import com.lastsword.entities.Player;
+import com.lastsword.menu.CharacterSelectionMenuPanel;
+import com.lastsword.menu.CharaterSelectionMenuWindow;
 
 
 public class Game {
+    private CharacterSelectionMenuPanel selectionMenuPanel;
+    private CharaterSelectionMenuWindow charaterSelectionMenuWindow;
     private GameWindow gameWindow;
     private GamePanel gamePanel;
     private AudioPlayer audioPlayer;
 
+    private Player selectedPlayer;
+
     public Game(){
-        gamePanel = new GamePanel();
-        gameWindow = new GameWindow(gamePanel);
-        gamePanel.requestFocus();
+        selectionMenuPanel = new CharacterSelectionMenuPanel();
+        charaterSelectionMenuWindow = new CharaterSelectionMenuWindow(selectionMenuPanel);
+
 //        audioPlayer = new AudioPlayer("src/res/music/MainTheme.wav");
 //        audioPlayer.loop();
     }
 
+    public void StartGame(){
+        gamePanel = new GamePanel();
+        gameWindow = new GameWindow(gamePanel);
+        gamePanel.requestFocus();
+    }
+
+    public Player getSelectedPlayer() {
+        return selectedPlayer;
+    }
+
+    public void setSelectedPlayer(Player selectedPlayer) {
+        this.selectedPlayer = selectedPlayer;
+    }
 }

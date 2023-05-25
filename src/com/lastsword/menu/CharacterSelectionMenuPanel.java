@@ -1,5 +1,7 @@
 package com.lastsword.menu;
 
+import com.lastsword.entities.Player;
+import com.lastsword.game.Game;
 import com.lastsword.graphics.Animation;
 import com.lastsword.utilities.GetFrames;
 
@@ -17,7 +19,7 @@ public class CharacterSelectionMenuPanel extends JPanel{
     private static final int animationSpeed = 100;
     private static final  int animation_delay = 100;
     private Animation idleAnimation;
-    private int currentHeroIndex = 3;
+    private int currentHeroIndex = 1;
     private JTextArea heroInfoTextArea;
     private Timer idleAnimation_timer;
     private JButton previousButton;
@@ -62,7 +64,11 @@ public class CharacterSelectionMenuPanel extends JPanel{
         });
 
         selectButton.addActionListener(e -> {
-
+            Game game = new Game();
+            game.setSelectedPlayer(new Player(currentHeroIndex));
+            JFrame frame = (JFrame) getTopLevelAncestor();
+            frame.dispose();
+            game.StartGame();
         });
 
         heroInfoTextArea = new JTextArea();
@@ -127,11 +133,11 @@ public class CharacterSelectionMenuPanel extends JPanel{
     private String getCurrentHeroInfo() {
         switch (currentHeroIndex) {
             case 1:
-                return "Hero 1 Info";
+                return new Player(1).getInfo();
             case 2:
-                return "Hero 2 Info";
+                return new Player(2).getInfo();
             case 3:
-                return "Hero 3 Info";
+                return new Player(3).getInfo();
             default:
                 return "";
         }
