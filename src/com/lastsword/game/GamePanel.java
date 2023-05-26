@@ -1,5 +1,6 @@
 package com.lastsword.game;
 
+import com.lastsword.entities.Player;
 import com.lastsword.graphics.Animation;
 import com.lastsword.graphics.ButtonRenderer;
 import com.lastsword.input.KeyboardInputs;
@@ -30,10 +31,12 @@ public class GamePanel extends JPanel {
     private static final int animationSpeed = 100;
     private int MainAnimation_delay = 100;
 
-
+    private static Player player;
     private int[] letterValues;
 
     public GamePanel() {
+        player = Game.getSelectedPlayer();
+        System.out.println(player.getInfo());
         setBackground(Color.PINK);
         setSize(1280, 720);
         setFocusable(true);
@@ -62,19 +65,39 @@ public class GamePanel extends JPanel {
         buttonRenderer = new ButtonRenderer(letterValues);
     }
     private void AddAttackFrames(){
-        GetFrames getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_archer/Attack_1.png");
-        List<BufferedImage> frames1 = scaleImages(getFrames1.FramesToList(),2);
-
-        GetFrames getFrames2 = new GetFrames("src/res/images/sprites/player/samurai_archer/Attack_2.png");
-        List<BufferedImage> frames2 = scaleImages(getFrames2.FramesToList(),2);
-
-        GetFrames getFrames3 = new GetFrames("src/res/images/sprites/player/samurai_archer/Attack_3.png");
-        List<BufferedImage> frames3 = scaleImages(getFrames3.FramesToList(),2);
+        GetFrames getFrames1,getFrames2,getFrames3;
+        List<BufferedImage> frames1 = null,frames2 = null,frames3 = null;
+        switch (player.getPlayerId()){
+            case 1:{
+                getFrames1 = new GetFrames("src/res/images/sprites/player/fire_vizard/Attack_1.png");
+                frames1 = scaleImages(getFrames1.FramesToList(),2);
+                getFrames2 = new GetFrames("src/res/images/sprites/player/fire_vizard/Attack_2.png");
+                frames2 = scaleImages(getFrames2.FramesToList(),2);
+                break;}
+            case 2:{
+                getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_archer/Attack_1.png");
+                frames1 = scaleImages(getFrames1.FramesToList(),2);
+                getFrames2 = new GetFrames("src/res/images/sprites/player/samurai_archer/Attack_2.png");
+                frames2 = scaleImages(getFrames2.FramesToList(),2);
+                getFrames3 = new GetFrames("src/res/images/sprites/player/samurai_archer/Attack_3.png");
+                frames3 = scaleImages(getFrames3.FramesToList(),2);
+                break;}
+            case 3:{
+                getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_commander/Attack_1.png");
+                frames1 = scaleImages(getFrames1.FramesToList(),2);
+                getFrames2 = new GetFrames("src/res/images/sprites/player/samurai_commander/Attack_2.png");
+                frames2 = scaleImages(getFrames2.FramesToList(),2);
+                getFrames3 = new GetFrames("src/res/images/sprites/player/samurai_commander/Attack_3.png");
+                frames3 = scaleImages(getFrames3.FramesToList(),2);
+                break;}
+        }
 
         attackFrames = new ArrayList<>();
         attackFrames.addAll(frames1);
         attackFrames.addAll(frames2);
-        attackFrames.addAll(frames3);
+        if(player.getPlayerId()!=1) {
+            attackFrames.addAll(frames3);
+        }
     }
     private void CreateTimers(){
         attackAnimation_timer = new Timer(MainAnimation_delay, e -> {

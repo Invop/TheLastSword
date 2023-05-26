@@ -16,7 +16,7 @@ public class CharacterSelectionMenuPanel extends JPanel{
     private List<BufferedImage> idleAnimationHero1;
     private List<BufferedImage> idleAnimationHero2;
     private List<BufferedImage> idleAnimationHero3;
-    private static final int animationSpeed = 100;
+    private static final int animationSpeed = 120;
     private static final  int animation_delay = 100;
     private Animation idleAnimation;
     private int currentHeroIndex = 1;
@@ -43,7 +43,6 @@ public class CharacterSelectionMenuPanel extends JPanel{
         selectButton = new JButton("Select");
 
         previousButton.addActionListener(e -> {
-            System.out.println(currentHeroIndex);
             if (currentHeroIndex > 1) {
                 currentHeroIndex--;
             } else {
@@ -53,20 +52,19 @@ public class CharacterSelectionMenuPanel extends JPanel{
         });
 
         nextButton.addActionListener(e -> {
-            System.out.println(currentHeroIndex);
             if (currentHeroIndex < 3) {
                 currentHeroIndex++;
             } else {
                 currentHeroIndex = 1;
             }
             UpdateHeroInfo(currentHeroIndex);
-
         });
 
         selectButton.addActionListener(e -> {
             Game game = new Game();
             game.setSelectedPlayer(new Player(currentHeroIndex));
             JFrame frame = (JFrame) getTopLevelAncestor();
+            frame.requestFocus();
             frame.dispose();
             game.StartGame();
         });
@@ -121,7 +119,7 @@ public class CharacterSelectionMenuPanel extends JPanel{
         repaint();
     }
     private void AddIdleFrames() {
-        GetFrames getFrames1 = new GetFrames("src/res/images/sprites/player/samurai/Idle.png");
+        GetFrames getFrames1 = new GetFrames("src/res/images/sprites/player/fire_vizard/Idle.png");
         idleAnimationHero1 = scaleImages(getFrames1.FramesToList(), 2);
 
         GetFrames getFrames2 = new GetFrames("src/res/images/sprites/player/samurai_archer/Idle.png");

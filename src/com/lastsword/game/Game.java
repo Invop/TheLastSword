@@ -13,7 +13,7 @@ public class Game {
     private GamePanel gamePanel;
     private AudioPlayer audioPlayer;
 
-    private Player selectedPlayer;
+    private static Player selectedPlayer;
 
     public Game(){
         selectionMenuPanel = new CharacterSelectionMenuPanel();
@@ -24,12 +24,13 @@ public class Game {
     }
 
     public void StartGame(){
+        charaterSelectionMenuWindow.dispose();
         gamePanel = new GamePanel();
         gameWindow = new GameWindow(gamePanel);
         gamePanel.requestFocus();
     }
 
-    public Player getSelectedPlayer() {
+    public static Player getSelectedPlayer() {
         return selectedPlayer;
     }
 
