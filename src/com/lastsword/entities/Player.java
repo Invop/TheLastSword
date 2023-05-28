@@ -1,10 +1,10 @@
 package com.lastsword.entities;
 
 public class Player {
-    private int score;
-    private int playerHp;
-    private String info;
-    private int playerId;
+    private static int score;
+    private static int playerHp;
+    private static String info;
+    private static int playerId;
     private static final int ultChance  = 8;
 
     public Player(int playerIndx){
