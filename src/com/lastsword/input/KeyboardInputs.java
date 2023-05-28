@@ -40,7 +40,7 @@ public class KeyboardInputs implements KeyListener {
                     currentIndex++;
                     buttonRenderer.updateImage(currentIndex - 1);
                     if (currentIndex == wordToMatch.length()) {
-                        GamePanel.SetAnimationStart(true);
+                        GamePanel.SetUltAnimationStart(true);
                         currentIndex = 0;
                     }
                 } else {

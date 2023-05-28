@@ -10,5 +10,6 @@ public class GameWindow extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         add(gamePanel);
         setVisible(true);
+
     }
 }

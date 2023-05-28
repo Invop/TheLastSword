@@ -2,6 +2,7 @@ package com.lastsword.graphics;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Animation {
@@ -20,7 +21,20 @@ public class Animation {
         lastFrameTime = 0;
     }
 
+    public Animation(BufferedImage frame) {
+        this.frames = new ArrayList<>();
+        this.frames.add(frame);
+        this.animationSpeed = 0; // Set animation speed to 0 as there's only one frame
+        this.loop = false; // Disable looping for single frame
+        currentFrameIndex = 0;
+        lastFrameTime = 0;
+    }
+
     public void update() {
+        if (animationSpeed <= 0) {
+            return; // No need to update if animation speed is 0 or less
+        }
+
         long currentTime = System.currentTimeMillis();
 
         if (currentTime - lastFrameTime > animationSpeed) {
@@ -39,5 +53,12 @@ public class Animation {
     public void draw(Graphics g, int x, int y) {
         BufferedImage currentFrame = frames.get(currentFrameIndex);
         g.drawImage(currentFrame, x, y, null);
+    }
+    public int getCurrentFrameIndex() {
+        return currentFrameIndex;
+    }
+
+    public List<BufferedImage> getFrames(){
+        return frames;
     }
 }
