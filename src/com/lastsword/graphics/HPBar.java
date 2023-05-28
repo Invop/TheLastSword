@@ -1,10 +1,10 @@
-package com.lastsword.utilities;
+package com.lastsword.graphics;
 
-public class HPBarLogic {
+public class HPBar {
     private int maxHP;
     private int currentHP;
 
-    public HPBarLogic(int maxHP) {
+    public HPBar(int maxHP) {
         this.maxHP = maxHP;
         this.currentHP = maxHP;
     }
