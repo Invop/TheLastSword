@@ -15,28 +15,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static com.lastsword.utilities.GetFrames.scaleImage;
 import static com.lastsword.utilities.GetFrames.scaleImages;
 
 
 public class GamePanel extends JPanel {
     private Animation attackAnimation;
     private Animation ultAnimation;
+    private Animation arrowAnimation;
     private Timer animation_timer;
+    private Timer arrow_timer;
     private WordGenerator wordGenerator;
     private ButtonRenderer buttonRenderer;
     private KeyboardInputs keyboardInputs;
-
     private List<BufferedImage> attackFrames;
     private List<BufferedImage> ultFrames;
-
+    private BufferedImage arrow;
     private static boolean attackAnimationStart = false;
     private static boolean ultAnimationStart = false;
-    private static  int animationSpeed = 100;
-    private int animation_delay = 100;
-
+    private boolean ultAnimationFinished = false;
+    private boolean isImageVisible = false;
+    private static  int attackAnimationSpeed = 100;
+    private static  int ultAnimationSpeed = 100;
+    private int attackAnimation_delay = 100;
+    private int arrowAnimation_delay = 90;
     private static Player player;
     private int[] letterValues;
     private Random random;
+    private int shiftX = 50;
 
 
     public GamePanel() {
@@ -45,7 +51,10 @@ public class GamePanel extends JPanel {
         setBackground(Color.PINK);
         setSize(1280, 720);
         setFocusable(true);
-        CreateTimers();
+        CreateTimer();
+        if(player.getPlayerId()==2) {
+            AddArrowFrame();
+        }
         AddAttackFrames();
         AddUltFrames();
         AddAnimations();
@@ -68,6 +77,18 @@ public class GamePanel extends JPanel {
         if (ultAnimationStart){
             ultAnimation.update();
             ultAnimation.draw(g,x,y);
+            // Check if ultAnimation has finished
+            if (ultAnimation.getCurrentFrameIndex() == ultAnimation.getFrames().size() - 4) {
+                ultAnimationFinished = true;
+            }
+        }
+        if (ultAnimationFinished) {
+            arrowAnimation.update();
+            if (arrowAnimation.getCurrentFrameIndex() >= 0) {
+                isImageVisible = true; // Set the flag to true when the image is about to appear
+                shiftX += 20 ; // Update the X-axis shift
+            }
+            arrowAnimation.draw(g, x + shiftX, y+83);
         }
     }
 
@@ -161,18 +182,31 @@ public class GamePanel extends JPanel {
         }
     }
 
-    private void CreateTimers() {
-        animation_timer = new Timer(animation_delay, e -> {
+    private void AddArrowFrame(){
+        GetFrames getFrame;
+        getFrame = new GetFrames("src/res/images/sprites/player/samurai_archer/Arrow.png");
+        arrow = scaleImage(getFrame.getFrame(),2);
+    }
+
+    private void CreateTimer() {
+        animation_timer = new Timer(attackAnimation_delay, e -> {
             repaint();
         });
         animation_timer.start();
-    }
+        if(player.getPlayerId()==2) {
+            arrow_timer = new Timer(arrowAnimation_delay, e -> {
+                repaint();
 
+            });
+            arrow_timer.start();
+        }
+    }
     private void AddAnimations() {
-        attackAnimation = new Animation(attackFrames, animationSpeed, false);
-        if(player.getPlayerId()==3){animationSpeed = 160; animation_delay=160;}
-        else{animationSpeed = 100; animation_delay=100;}
-        ultAnimation = new Animation(ultFrames, animationSpeed, false);
+        if(player.getPlayerId()==3){ultAnimationSpeed=160;}
+        else{ultAnimationSpeed=100;}
+        attackAnimation = new Animation(attackFrames, attackAnimationSpeed, false);
+        ultAnimation = new Animation(ultFrames, ultAnimationSpeed, false);
+        if(player.getPlayerId()==2)arrowAnimation = new Animation(arrow);
     }
 
     public static void SetAttackAnimationStart(boolean state) {

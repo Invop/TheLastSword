@@ -16,25 +16,28 @@ public class GetFrames {
     private String fileIdlePath;
     private List<BufferedImage> frames;
     private BufferedImage spriteIdleSheet;
+    private BufferedImage spriteSheet;
 
     public GetFrames(String filePath, String fileIdlePath){
         this.filePath=filePath;
         this.fileIdlePath=fileIdlePath;
     }
-
+    public GetFrames(String fileIdlePath){
+        this.fileIdlePath=fileIdlePath;
+    }
     public List<BufferedImage> FramesToList(){
         try {
-            BufferedImage spriteSheet = ImageIO.read(new File(filePath)); // Завантаження спрайт-аркуша
+            frames = new ArrayList<>();
+            if(filePath!=null) {
+                spriteSheet = ImageIO.read(new File(filePath));
+                for ( BufferedImage frame:
+                        extractFrames(spriteSheet)) {
+                    frames.add(frame);
+                }
+            } // Завантаження спрайт-аркуша
             if(fileIdlePath!=null) {
                 spriteIdleSheet = ImageIO.read(new File(fileIdlePath));
-            }
-            frames = new ArrayList<>();
-            for ( BufferedImage frame:
-                 extractFrames(spriteSheet)) {
-                frames.add(frame);
-            }
-            if(spriteIdleSheet!=null) {
-            frames.add(extractFirstIdleFrame(spriteIdleSheet));
+                frames.add(extractFirstIdleFrame(spriteIdleSheet));
             }
             return frames;
         } catch (IOException e) {
@@ -42,6 +45,33 @@ public class GetFrames {
         }
         return null;
     }
+    public BufferedImage getFrame(){
+        try {
+            if(fileIdlePath!=null) {
+                spriteIdleSheet = ImageIO.read(new File(fileIdlePath));
+                return extractFirstIdleFrame(spriteIdleSheet);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static BufferedImage scaleImage(BufferedImage image, double scale) {
+        double scaledWidth = image.getWidth() * scale;
+        double scaledHeight = image.getHeight() * scale;
+
+        BufferedImage scaledImage = new BufferedImage((int) scaledWidth, (int) scaledHeight, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D graphics2D = scaledImage.createGraphics();
+        graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+        AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
+        graphics2D.drawImage(image, transform, null);
+        graphics2D.dispose();
+
+        return scaledImage;
+    }
+
     public static List<BufferedImage> scaleImages(List<BufferedImage> images, double scale) {
         List<BufferedImage> scaledImages = new ArrayList<>();
 
