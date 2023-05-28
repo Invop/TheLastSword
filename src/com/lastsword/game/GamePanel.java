@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static com.lastsword.utilities.GetFrames.scaleImages;
 
@@ -33,6 +34,7 @@ public class GamePanel extends JPanel {
 
     private static Player player;
     private int[] letterValues;
+    private Random random;
 
     public GamePanel() {
         player = Game.getSelectedPlayer();
@@ -69,10 +71,10 @@ public class GamePanel extends JPanel {
         List<BufferedImage> frames1 = null,frames2 = null,frames3 = null;
         switch (player.getPlayerId()){
             case 1:{
-                getFrames1 = new GetFrames("src/res/images/sprites/player/fire_vizard/Attack_1.png");
-                frames1 = scaleImages(getFrames1.FramesToList(),2);
-                getFrames2 = new GetFrames("src/res/images/sprites/player/fire_vizard/Attack_2.png");
-                frames2 = scaleImages(getFrames2.FramesToList(),2);
+                    getFrames1 = new GetFrames("src/res/images/sprites/player/fire_vizard/Attack_1.png");
+                    frames1 = scaleImages(getFrames1.FramesToList(), 2);
+                    getFrames2 = new GetFrames("src/res/images/sprites/player/fire_vizard/Attack_2.png");
+                    frames2 = scaleImages(getFrames2.FramesToList(), 2);
                 break;}
             case 2:{
                 getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_archer/Attack_1.png");
@@ -93,9 +95,13 @@ public class GamePanel extends JPanel {
         }
 
         attackFrames = new ArrayList<>();
-        attackFrames.addAll(frames1);
-        attackFrames.addAll(frames2);
-        if(player.getPlayerId()!=1) {
+        if(frames1 != null){
+            attackFrames.addAll(frames1);
+        }
+        if(frames2 != null){
+            attackFrames.addAll(frames2);
+        }
+        if(frames3 != null) {
             attackFrames.addAll(frames3);
         }
     }
