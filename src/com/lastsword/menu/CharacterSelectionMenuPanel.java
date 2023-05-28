@@ -119,13 +119,13 @@ public class CharacterSelectionMenuPanel extends JPanel{
         repaint();
     }
     private void AddIdleFrames() {
-        GetFrames getFrames1 = new GetFrames("src/res/images/sprites/player/fire_vizard/Idle.png");
+        GetFrames getFrames1 = new GetFrames("src/res/images/sprites/player/fire_vizard/Idle.png",null);
         idleAnimationHero1 = scaleImages(getFrames1.FramesToList(), 2);
 
-        GetFrames getFrames2 = new GetFrames("src/res/images/sprites/player/samurai_archer/Idle.png");
+        GetFrames getFrames2 = new GetFrames("src/res/images/sprites/player/samurai_archer/Idle.png",null);
         idleAnimationHero2 = scaleImages(getFrames2.FramesToList(), 2);
 
-        GetFrames getFrames3 = new GetFrames("src/res/images/sprites/player/samurai_commander/Idle.png");
+        GetFrames getFrames3 = new GetFrames("src/res/images/sprites/player/samurai_commander/Idle.png",null);
         idleAnimationHero3 = scaleImages(getFrames3.FramesToList(), 2);
     }
     private String getCurrentHeroInfo() {

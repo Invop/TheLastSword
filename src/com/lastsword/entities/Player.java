@@ -5,7 +5,7 @@ public class Player {
     private int playerHp;
     private String info;
     private int playerId;
-    private static final int ultChance  = 15;
+    private static final int ultChance  = 8;
 
     public Player(int playerIndx){
         switch (playerIndx){
