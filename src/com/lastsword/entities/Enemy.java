@@ -12,5 +12,6 @@ public class Enemy {
     }
 
     //hydra - double dmg
-    //
+    //jug - 2x hp
+    //magorix - 1st stage (1 hit ) 2nd (4-5?)
 }
