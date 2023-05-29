@@ -19,24 +19,37 @@ import static com.lastsword.utilities.GetFrames.scaleImages;
 
 
 public class GamePanel extends JPanel {
-    private Animation attackAnimation,
-            ultAnimation, arrowAnimation,
-            walkAnimation, runAnimation,
-            hurtAnimation, deadAnimation;
+    private Animation attackAnimationPlayer,
+            ultAnimationPlayer, arrowAnimationPlayer,
+            walkAnimationPlayer, runAnimationPlayer,
+            hurtAnimationPlayer, deadAnimationPlayer;
+    private Animation attackAnimationEnemy,
+            ultAnimationEnemy, arrowAnimationEnemy,
+            walkAnimationEnemy, runAnimationEnemy,
+            hurtAnimationEnemy, deadAnimationEnemy;
     private Timer animation_timer, arrow_timer;
     private WordGenerator wordGenerator;
     private ButtonRenderer buttonRenderer;
     private final KeyboardInputs keyboardInputs;
-    private List<BufferedImage> attackFrames, ultFrames, walkFrames, runFrames, hurtFrames, deadFrames;
+    private List<BufferedImage> attackFramesPlayer, ultFramesPlayer, walkFramesPlayer, runFramesPlayer, hurtFramesPlayer, deadFramesPlayer;
+    private List<BufferedImage> attackFramesEnemy, ultFramesEnemy, walkFramesEnemy, runFramesEnemy, hurtFramesEnemy, deadFramesEnemy;
     private BufferedImage arrow;
-    private static boolean attackAnimationStart = false,
-            ultAnimationStart = false,
-            arrowAnimationStart = false,
-            walkAnimationStart = false,
-            runAnimationStart = false,
-            hurtAnimationStart = false,
-            deadAnimationStart = false,
-            isImageVisible = false;
+    private static boolean attackAnimationStartPlayer = false,
+            ultAnimationStartPlayer = false,
+            arrowAnimationStartPlayer = false,
+            walkAnimationStartPlayer = false,
+            runAnimationStartPlayer = false,
+            hurtAnimationStartPlayer = false,
+            deadAnimationStartPlayer = false,
+            isImageVisiblePlayer = false;
+    private static boolean attackAnimationStartEnemy = false,
+    ultAnimationStartPlayerEnemy = false,
+    arrowAnimationStartPlayerEnemy = false,
+    walkAnimationStartPlayerEnemy = false,
+    runAnimationStartPlayerEnemy = false,
+    hurtAnimationStartPlayerEnemy = false,
+    deadAnimationStartPlayerEnemy = false,
+    isImageVisiblePlayerEnemy = false;
     private static final int defaultAnimationSpeed = 100;
     private static int ultAnimationSpeed = 100;
     private final int attackAnimation_delay = 100;
@@ -78,43 +91,47 @@ public class GamePanel extends JPanel {
         AddPlayerDeadFrames();
     }
 
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         int x = 100;
         int y = 100;
         buttonRenderer.draw(g, x + 300, y + 300);
-        if (arrowAnimationStart) {
-            arrowAnimation.update();
-            if (arrowAnimation.getCurrentFrameIndex() >= 0) {
-                isImageVisible = true; // Set the flag to true when the image is about to appear
+        if (arrowAnimationStartPlayer) {
+            arrowAnimationPlayer.update();
+            if (arrowAnimationPlayer.getCurrentFrameIndex() >= 0) {
+                isImageVisiblePlayer = true; // Set the flag to true when the image is about to appear
                 shiftX += 20; // Update the X-axis shift
             }
-            if (isImageVisible) arrowAnimation.draw(g, x + shiftX, y + 83);
+            if (isImageVisiblePlayer) arrowAnimationPlayer.draw(g, x + shiftX, y + 83);
         }
-        if (attackAnimationStart) {
-            attackAnimation.update();
-            attackAnimation.draw(g, x, y);
-        } else if (ultAnimationStart) {
-            ultAnimation.update();
-            ultAnimation.draw(g, x, y);
+        if (attackAnimationStartPlayer) {
+            attackAnimationPlayer.update();
+            attackAnimationPlayer.draw(g, x, y);
+        }
+        else if (ultAnimationStartPlayer) {
+            ultAnimationPlayer.update();
+            ultAnimationPlayer.draw(g, x, y);
             // Check if ultAnimation has finished
-            if (ultAnimation.getCurrentFrameIndex() == ultAnimation.getFrames().size() - 4 && player.getPlayerId() == 2) {
-                arrowAnimationStart = true;
+            if (ultAnimationPlayer.getCurrentFrameIndex() == ultAnimationPlayer.getFrames().size() - 4 && player.getPlayerId() == 2) {
+                arrowAnimationStartPlayer = true;
             }
-        } else if (walkAnimationStart) {
-            walkAnimation.update();
-            walkAnimation.draw(g, x, y);
-        } else if (runAnimationStart) {
-            runAnimation.update();
-            runAnimation.draw(g, x, y);
-        } else if (hurtAnimationStart) {
-            hurtAnimation.update();
-            hurtAnimation.draw(g, x, y);
-        } else if (deadAnimationStart) {
-            deadAnimation.update();
-            deadAnimation.draw(g, x, y);
+        }
+        else if (walkAnimationStartPlayer) {
+            walkAnimationPlayer.update();
+            walkAnimationPlayer.draw(g, x, y);
+        }
+        else if (runAnimationStartPlayer) {
+            runAnimationPlayer.update();
+            runAnimationPlayer.draw(g, x, y);
+        }
+        else if (hurtAnimationStartPlayer) {
+            hurtAnimationPlayer.update();
+            hurtAnimationPlayer.draw(g, x, y);
+        }
+        else if (deadAnimationStartPlayer) {
+            deadAnimationPlayer.update();
+            deadAnimationPlayer.draw(g, x, y);
         }
     }
 
@@ -160,15 +177,15 @@ public class GamePanel extends JPanel {
             }
         }
 
-        attackFrames = new ArrayList<>();
+        attackFramesPlayer = new ArrayList<>();
         if (frames1 != null) {
-            attackFrames.addAll(frames1);
+            attackFramesPlayer.addAll(frames1);
         }
         if (frames2 != null) {
-            attackFrames.addAll(frames2);
+            attackFramesPlayer.addAll(frames2);
         }
         if (frames3 != null) {
-            attackFrames.addAll(frames3);
+            attackFramesPlayer.addAll(frames3);
         }
     }
 
@@ -192,10 +209,9 @@ public class GamePanel extends JPanel {
                 frames1 = scaleImages(getFrames1.FramesToList(), 2);
             }
         }
-
-        ultFrames = new ArrayList<>();
+        ultFramesPlayer = new ArrayList<>();
         if (frames1 != null) {
-            ultFrames.addAll(frames1);
+            ultFramesPlayer.addAll(frames1);
         }
     }
 
@@ -220,9 +236,9 @@ public class GamePanel extends JPanel {
             }
         }
 
-        walkFrames = new ArrayList<>();
+        walkFramesPlayer = new ArrayList<>();
         if (frames1 != null) {
-            walkFrames.addAll(frames1);
+            walkFramesPlayer.addAll(frames1);
         }
     }
 
@@ -247,9 +263,9 @@ public class GamePanel extends JPanel {
             }
         }
 
-        runFrames = new ArrayList<>();
+        runFramesPlayer = new ArrayList<>();
         if (frames1 != null) {
-            runFrames.addAll(frames1);
+            runFramesPlayer.addAll(frames1);
         }
     }
 
@@ -274,9 +290,9 @@ public class GamePanel extends JPanel {
             }
         }
 
-       hurtFrames = new ArrayList<>();
+       hurtFramesPlayer = new ArrayList<>();
         if (frames1 != null) {
-            hurtFrames.addAll(frames1);
+            hurtFramesPlayer.addAll(frames1);
         }
     }
 
@@ -301,9 +317,9 @@ public class GamePanel extends JPanel {
             }
         }
 
-        deadFrames = new ArrayList<>();
+        deadFramesPlayer = new ArrayList<>();
         if (frames1 != null) {
-            deadFrames.addAll(frames1);
+            deadFramesPlayer.addAll(frames1);
         }
     }
 
@@ -334,37 +350,37 @@ public class GamePanel extends JPanel {
         } else {
             ultAnimationSpeed = 100;
         }
-        attackAnimation = new Animation(attackFrames, defaultAnimationSpeed, true);
-        ultAnimation = new Animation(ultFrames, ultAnimationSpeed, false);
-        if (player.getPlayerId() == 2) arrowAnimation = new Animation(arrow);
-        walkAnimation = new Animation(walkFrames, defaultAnimationSpeed, false);
-        runAnimation = new Animation(runFrames, defaultAnimationSpeed, false);
-        hurtAnimation = new Animation(hurtFrames, defaultAnimationSpeed, false);
-        deadAnimation = new Animation(deadFrames, defaultAnimationSpeed, false);
+        attackAnimationPlayer = new Animation(attackFramesPlayer, defaultAnimationSpeed, true);
+        ultAnimationPlayer = new Animation(ultFramesPlayer, ultAnimationSpeed, false);
+        if (player.getPlayerId() == 2) arrowAnimationPlayer = new Animation(arrow);
+        walkAnimationPlayer = new Animation(walkFramesPlayer, defaultAnimationSpeed, false);
+        runAnimationPlayer = new Animation(runFramesPlayer, defaultAnimationSpeed, false);
+        hurtAnimationPlayer = new Animation(hurtFramesPlayer, defaultAnimationSpeed, false);
+        deadAnimationPlayer = new Animation(deadFramesPlayer, defaultAnimationSpeed, false);
     }
 
-    public static void setAttackAnimationStart(boolean state) {
-        attackAnimationStart = state;
+    public static void setAttackAnimationStartPlayer(boolean state) {
+        attackAnimationStartPlayer = state;
     }
 
-    public static void setUltAnimationStart(boolean state) {
-        ultAnimationStart = state;
+    public static void setUltAnimationStartPlayer(boolean state) {
+        ultAnimationStartPlayer = state;
     }
 
-    public static void setWalkAnimationStart(boolean state) {
-        walkAnimationStart = state;
+    public static void setWalkAnimationStartPlayer(boolean state) {
+        walkAnimationStartPlayer = state;
     }
 
-    public static void setRunAnimationStart(boolean state) {
-        runAnimationStart = state;
+    public static void setRunAnimationStartPlayer(boolean state) {
+        runAnimationStartPlayer = state;
     }
 
-    public static void setHurtAnimationStart(boolean state) {
-        hurtAnimationStart = state;
+    public static void setHurtAnimationStartPlayer(boolean state) {
+        hurtAnimationStartPlayer = state;
     }
 
-    public static void setDeadAnimationStart(boolean state) {
-        deadAnimationStart = state;
+    public static void setDeadAnimationStartPlayer(boolean state) {
+        deadAnimationStartPlayer = state;
     }
 }
 
