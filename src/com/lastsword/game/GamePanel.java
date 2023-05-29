@@ -274,9 +274,9 @@ public class GamePanel extends JPanel {
             }
         }
 
-        walkFrames = new ArrayList<>();
+       hurtFrames = new ArrayList<>();
         if (frames1 != null) {
-            walkFrames.addAll(frames1);
+            hurtFrames.addAll(frames1);
         }
     }
 
@@ -301,9 +301,9 @@ public class GamePanel extends JPanel {
             }
         }
 
-        walkFrames = new ArrayList<>();
+        deadFrames = new ArrayList<>();
         if (frames1 != null) {
-            walkFrames.addAll(frames1);
+            deadFrames.addAll(frames1);
         }
     }
 
