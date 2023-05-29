@@ -10,7 +10,6 @@ public enum Letter {
     J(29),
     K(30),
     L(31);
-
     private final int numericValue;
 
     Letter(int numericValue) {
