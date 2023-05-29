@@ -41,7 +41,7 @@ public class KeyboardInputs implements KeyListener {
                     currentIndex++;
                     buttonRenderer.updateImage(currentIndex - 1);
                     if (currentIndex == wordToMatch.length()) {
-                        GamePanel.SetUltAnimationStart(true);
+                        GamePanel.setAttackAnimationStart(true);
                         currentIndex = 0;
                     }
                 } else {

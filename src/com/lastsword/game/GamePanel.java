@@ -33,9 +33,9 @@ public class GamePanel extends JPanel {
             ultAnimationStart = false,
             arrowAnimationStart = false,
             walkAnimationStart = false,
-            runAnimationStart=false,
-            hurtAnimationStart=false,
-            deadAnimationStart=false,
+            runAnimationStart = false,
+            hurtAnimationStart = false,
+            deadAnimationStart = false,
             isImageVisible = false;
     private static final int defaultAnimationSpeed = 100;
     private static int ultAnimationSpeed = 100;
@@ -54,30 +54,28 @@ public class GamePanel extends JPanel {
         setSize(1280, 720);
         setFocusable(true);
         CreateTimer();
-
-
-
         InitFrames();
         AddAnimations();
         RenderRandomBtns();
         addKeyListener(keyboardInputs = new KeyboardInputs(wordGenerator.getWord(), buttonRenderer));
     }
-    private void InitFrames(){
+
+    private void InitFrames() {
 
         //move
-        AddWalkFrames();
-        AddRunFrames();
+        AddPlayerWalkFrames();
+        AddPlayerRunFrames();
 
         //dmg out
-        AddAttackFrames();
-        AddUltFrames();
+        AddPlayerAttackFrames();
+        AddPlayerUltFrames();
         if (player.getPlayerId() == 2) {
-            AddArrowFrame();
+            AddPlayerArrowFrame();
         }
 
         //dmg in
-        AddHurtFrames();
-        AddDeadFrames();
+        AddPlayerHurtFrames();
+        AddPlayerDeadFrames();
     }
 
 
@@ -98,29 +96,25 @@ public class GamePanel extends JPanel {
         if (attackAnimationStart) {
             attackAnimation.update();
             attackAnimation.draw(g, x, y);
-        }
-        else if (ultAnimationStart) {
+        } else if (ultAnimationStart) {
             ultAnimation.update();
             ultAnimation.draw(g, x, y);
             // Check if ultAnimation has finished
             if (ultAnimation.getCurrentFrameIndex() == ultAnimation.getFrames().size() - 4 && player.getPlayerId() == 2) {
                 arrowAnimationStart = true;
             }
-        }
-        else if (walkAnimationStart){walkAnimation.update();
-            walkAnimation.draw(g,x,y);
-        }
-        else if (runAnimationStart) {
+        } else if (walkAnimationStart) {
+            walkAnimation.update();
+            walkAnimation.draw(g, x, y);
+        } else if (runAnimationStart) {
             runAnimation.update();
-            runAnimation.draw(g,x,y);
-        }
-        else if (hurtAnimationStart) {
+            runAnimation.draw(g, x, y);
+        } else if (hurtAnimationStart) {
             hurtAnimation.update();
-            hurtAnimation.draw(g,x,y);
-        }
-        else if (deadAnimationStart) {
+            hurtAnimation.draw(g, x, y);
+        } else if (deadAnimationStart) {
             deadAnimation.update();
-            deadAnimation.draw(g,x,y);
+            deadAnimation.draw(g, x, y);
         }
     }
 
@@ -129,20 +123,20 @@ public class GamePanel extends JPanel {
         letterValues = wordGenerator.getLetterValues();
         buttonRenderer = new ButtonRenderer(letterValues);
     }
-    private void AddAttackFrames() {
+
+    private void AddPlayerAttackFrames() {
         GetFrames getFrames1, getFrames2, getFrames3;
         List<BufferedImage> frames1 = null, frames2 = null, frames3 = null;
         switch (player.getPlayerId()) {
-            case 1: {
+            case 1 -> {
                 getFrames1 = new GetFrames("src/res/images/sprites/player/fire_vizard/Attack_1.png",
                         null);
                 frames1 = scaleImages(getFrames1.FramesToList(), 2);
                 getFrames2 = new GetFrames("src/res/images/sprites/player/fire_vizard/Attack_2.png",
                         null);
                 frames2 = scaleImages(getFrames2.FramesToList(), 2);
-                break;
             }
-            case 2: {
+            case 2 -> {
                 getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_archer/Attack_1.png",
                         null);
                 frames1 = scaleImages(getFrames1.FramesToList(), 2);
@@ -152,9 +146,8 @@ public class GamePanel extends JPanel {
                 getFrames3 = new GetFrames("src/res/images/sprites/player/samurai_archer/Attack_3.png",
                         null);
                 frames3 = scaleImages(getFrames3.FramesToList(), 2);
-                break;
             }
-            case 3: {
+            case 3 -> {
                 getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_commander/Attack_1.png",
                         null);
                 frames1 = scaleImages(getFrames1.FramesToList(), 2);
@@ -164,7 +157,6 @@ public class GamePanel extends JPanel {
                 getFrames3 = new GetFrames("src/res/images/sprites/player/samurai_commander/Attack_3.png",
                         null);
                 frames3 = scaleImages(getFrames3.FramesToList(), 2);
-                break;
             }
         }
 
@@ -179,27 +171,25 @@ public class GamePanel extends JPanel {
             attackFrames.addAll(frames3);
         }
     }
-    private void AddUltFrames() {
+
+    private void AddPlayerUltFrames() {
         GetFrames getFrames1;
-        List<BufferedImage> frames1 = null, frames2 = null, frames3 = null;
+        List<BufferedImage> frames1 = null;
         switch (player.getPlayerId()) {
-            case 1: {
+            case 1 -> {
                 getFrames1 = new GetFrames("src/res/images/sprites/player/fire_vizard/Flame_jet.png",
                         "src/res/images/sprites/player/fire_vizard/Idle.png");
                 frames1 = scaleImages(getFrames1.FramesToList(), 2);
-                break;
             }
-            case 2: {
+            case 2 -> {
                 getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_archer/Shot.png",
                         "src/res/images/sprites/player/samurai_archer/Idle.png");
                 frames1 = scaleImages(getFrames1.FramesToList(), 2);
-                break;
             }
-            case 3: {
+            case 3 -> {
                 getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_commander/Protect.png",
                         "src/res/images/sprites/player/samurai_commander/Idle.png");
                 frames1 = scaleImages(getFrames1.FramesToList(), 2);
-                break;
             }
         }
 
@@ -207,31 +197,26 @@ public class GamePanel extends JPanel {
         if (frames1 != null) {
             ultFrames.addAll(frames1);
         }
-        if (frames2 != null) {
-            ultFrames.addAll(frames2);
-        }
     }
-    private void AddWalkFrames(){
+
+    private void AddPlayerWalkFrames() {
         GetFrames getFrames1;
-        List<BufferedImage> frames1 = null, frames2 = null, frames3 = null;
+        List<BufferedImage> frames1 = null;
         switch (player.getPlayerId()) {
-            case 1: {
+            case 1 -> {
                 getFrames1 = new GetFrames("src/res/images/sprites/player/fire_vizard/Walk.png",
                         null);
                 frames1 = scaleImages(getFrames1.FramesToList(), 2);
-                break;
             }
-            case 2: {
+            case 2 -> {
                 getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_archer/Walk.png",
                         null);
                 frames1 = scaleImages(getFrames1.FramesToList(), 2);
-                break;
             }
-            case 3: {
+            case 3 -> {
                 getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_commander/Walk.png",
                         null);
                 frames1 = scaleImages(getFrames1.FramesToList(), 2);
-                break;
             }
         }
 
@@ -239,107 +224,90 @@ public class GamePanel extends JPanel {
         if (frames1 != null) {
             walkFrames.addAll(frames1);
         }
-        if (frames2 != null) {
-            walkFrames.addAll(frames2);
+    }
+
+    private void AddPlayerRunFrames() {
+        GetFrames getFrames1;
+        List<BufferedImage> frames1 = null;
+        switch (player.getPlayerId()) {
+            case 1 -> {
+                getFrames1 = new GetFrames("src/res/images/sprites/player/fire_vizard/Run.png",
+                        null);
+                frames1 = scaleImages(getFrames1.FramesToList(), 2);
+            }
+            case 2 -> {
+                getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_archer/Run.png",
+                        null);
+                frames1 = scaleImages(getFrames1.FramesToList(), 2);
+            }
+            case 3 -> {
+                getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_commander/Run.png",
+                        null);
+                frames1 = scaleImages(getFrames1.FramesToList(), 2);
+            }
+        }
+
+        runFrames = new ArrayList<>();
+        if (frames1 != null) {
+            runFrames.addAll(frames1);
         }
     }
-    private void AddRunFrames(){
-       GetFrames getFrames1;
-       List<BufferedImage> frames1 = null, frames2 = null, frames3 = null;
-       switch (player.getPlayerId()) {
-           case 1: {
-               getFrames1 = new GetFrames("src/res/images/sprites/player/fire_vizard/Run.png",
-                       null);
-               frames1 = scaleImages(getFrames1.FramesToList(), 2);
-               break;
-           }
-           case 2: {
-               getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_archer/Run.png",
-                       null);
-               frames1 = scaleImages(getFrames1.FramesToList(), 2);
-               break;
-           }
-           case 3: {
-               getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_commander/Run.png",
-                       null);
-               frames1 = scaleImages(getFrames1.FramesToList(), 2);
-               break;
-           }
-       }
 
-       runFrames = new ArrayList<>();
-       if (frames1 != null) {
-           runFrames.addAll(frames1);
-       }
-       if (frames2 != null) {
-           runFrames.addAll(frames2);
-       }
-   }
-    private void AddHurtFrames(){
+    private void AddPlayerHurtFrames() {
         GetFrames getFrames1;
-        List<BufferedImage> frames1 = null, frames2 = null, frames3 = null;
+        List<BufferedImage> frames1 = null;
         switch (player.getPlayerId()) {
-            case 1: {
+            case 1 -> {
                 getFrames1 = new GetFrames("src/res/images/sprites/player/fire_vizard/Hurt.png",
                         null);
                 frames1 = scaleImages(getFrames1.FramesToList(), 2);
-                break;
             }
-            case 2: {
+            case 2 -> {
                 getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_archer/Hurt.png",
                         null);
                 frames1 = scaleImages(getFrames1.FramesToList(), 2);
-                break;
             }
-            case 3: {
+            case 3 -> {
                 getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_commander/Hurt.png",
                         null);
                 frames1 = scaleImages(getFrames1.FramesToList(), 2);
-                break;
             }
         }
 
-        walkFrames = new ArrayList<>();
+       hurtFrames = new ArrayList<>();
         if (frames1 != null) {
-            walkFrames.addAll(frames1);
-        }
-        if (frames2 != null) {
-            walkFrames.addAll(frames2);
+            hurtFrames.addAll(frames1);
         }
     }
-    private void AddDeadFrames(){
+
+    private void AddPlayerDeadFrames() {
         GetFrames getFrames1;
-        List<BufferedImage> frames1 = null, frames2 = null, frames3 = null;
+        List<BufferedImage> frames1 = null;
         switch (player.getPlayerId()) {
-            case 1: {
+            case 1 -> {
                 getFrames1 = new GetFrames("src/res/images/sprites/player/fire_vizard/Dead.png",
                         null);
                 frames1 = scaleImages(getFrames1.FramesToList(), 2);
-                break;
             }
-            case 2: {
+            case 2 -> {
                 getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_archer/Dead.png",
                         null);
                 frames1 = scaleImages(getFrames1.FramesToList(), 2);
-                break;
             }
-            case 3: {
+            case 3 -> {
                 getFrames1 = new GetFrames("src/res/images/sprites/player/samurai_commander/Dead.png",
                         null);
                 frames1 = scaleImages(getFrames1.FramesToList(), 2);
-                break;
             }
         }
 
-        walkFrames = new ArrayList<>();
+        deadFrames = new ArrayList<>();
         if (frames1 != null) {
-            walkFrames.addAll(frames1);
-        }
-        if (frames2 != null) {
-            walkFrames.addAll(frames2);
+            deadFrames.addAll(frames1);
         }
     }
-    private void AddArrowFrame() {
+
+    private void AddPlayerArrowFrame() {
         GetFrames getFrame;
         getFrame = new GetFrames("src/res/images/sprites/player/samurai_archer/Arrow.png");
         arrow = scaleImage(getFrame.getFrame(), 2);
@@ -369,10 +337,10 @@ public class GamePanel extends JPanel {
         attackAnimation = new Animation(attackFrames, defaultAnimationSpeed, true);
         ultAnimation = new Animation(ultFrames, ultAnimationSpeed, false);
         if (player.getPlayerId() == 2) arrowAnimation = new Animation(arrow);
-        walkAnimation = new Animation(walkFrames,defaultAnimationSpeed,false);
-        runAnimation = new Animation(runFrames,defaultAnimationSpeed,false);
-        hurtAnimation =  new Animation(hurtFrames,defaultAnimationSpeed,false);
-        deadAnimation =  new Animation(deadFrames,defaultAnimationSpeed,false);
+        walkAnimation = new Animation(walkFrames, defaultAnimationSpeed, false);
+        runAnimation = new Animation(runFrames, defaultAnimationSpeed, false);
+        hurtAnimation = new Animation(hurtFrames, defaultAnimationSpeed, false);
+        deadAnimation = new Animation(deadFrames, defaultAnimationSpeed, false);
     }
 
     public static void setAttackAnimationStart(boolean state) {
@@ -382,15 +350,19 @@ public class GamePanel extends JPanel {
     public static void setUltAnimationStart(boolean state) {
         ultAnimationStart = state;
     }
+
     public static void setWalkAnimationStart(boolean state) {
         walkAnimationStart = state;
     }
+
     public static void setRunAnimationStart(boolean state) {
         runAnimationStart = state;
     }
+
     public static void setHurtAnimationStart(boolean state) {
         hurtAnimationStart = state;
     }
+
     public static void setDeadAnimationStart(boolean state) {
         deadAnimationStart = state;
     }
