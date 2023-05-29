@@ -1,7 +1,7 @@
 package com.lastsword.graphics;
 
 public class HPBar {
-    private int maxHP;
+    private final int maxHP;
     private int currentHP;
 
     public HPBar(int maxHP) {

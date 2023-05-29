@@ -5,8 +5,8 @@ import java.awt.*;
 
 public class ButtonRenderer {
 
-    private int[] letterValues;
-    private Image[] images;
+    private final int[] letterValues;
+    private final Image[] images;
 
     public ButtonRenderer(int[] letterValues) {
         this.letterValues = letterValues;

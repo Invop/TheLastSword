@@ -1,24 +1,25 @@
 package com.lastsword.input;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
 import com.lastsword.game.GamePanel;
 import com.lastsword.graphics.ButtonRenderer;
 import com.lastsword.utilities.Letter;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
 public class KeyboardInputs implements KeyListener {
 
-    private String wordToMatch;
+    private final String wordToMatch;
     private int currentIndex;
-    private ButtonRenderer buttonRenderer;
+    private final ButtonRenderer buttonRenderer;
 
     public KeyboardInputs(String wordToMatch, ButtonRenderer buttonRenderer) {
         this.wordToMatch = wordToMatch;
-        this.buttonRenderer=buttonRenderer;
+        this.buttonRenderer = buttonRenderer;
         this.currentIndex = 0;
 
     }
+
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -51,7 +52,6 @@ public class KeyboardInputs implements KeyListener {
             }
         }
     }
-
 
 
 }

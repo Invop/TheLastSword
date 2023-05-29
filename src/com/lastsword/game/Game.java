@@ -7,15 +7,15 @@ import com.lastsword.menu.CharaterSelectionMenuWindow;
 
 
 public class Game {
-    private CharacterSelectionMenuPanel selectionMenuPanel;
-    private CharaterSelectionMenuWindow charaterSelectionMenuWindow;
+    private final CharacterSelectionMenuPanel selectionMenuPanel;
+    private final CharaterSelectionMenuWindow charaterSelectionMenuWindow;
     private GameWindow gameWindow;
     private GamePanel gamePanel;
     private AudioPlayer audioPlayer;
 
     private static Player selectedPlayer;
 
-    public Game(){
+    public Game() {
         selectionMenuPanel = new CharacterSelectionMenuPanel();
         charaterSelectionMenuWindow = new CharaterSelectionMenuWindow(selectionMenuPanel);
 
@@ -23,7 +23,7 @@ public class Game {
 //        audioPlayer.loop();
     }
 
-    public void StartGame(){
+    public void StartGame() {
         charaterSelectionMenuWindow.dispose();
         gamePanel = new GamePanel();
         gameWindow = new GameWindow(gamePanel);
@@ -35,6 +35,6 @@ public class Game {
     }
 
     public void setSelectedPlayer(Player selectedPlayer) {
-        this.selectedPlayer = selectedPlayer;
+        Game.selectedPlayer = selectedPlayer;
     }
 }

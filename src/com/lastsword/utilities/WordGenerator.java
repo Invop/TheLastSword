@@ -4,10 +4,10 @@ import java.util.Random;
 
 public class WordGenerator {
     private static final Random random = new Random();
-    private String word;
-    private int[] letterValues;
+    private final String word;
+    private final int[] letterValues;
 
-    public WordGenerator(int lenght){
+    public WordGenerator(int lenght) {
         word = generateWord(lenght);
         letterValues = convertWordToLetterValues(word);
     }
@@ -40,7 +40,7 @@ public class WordGenerator {
         return letterValues;
     }
 
-    public String getWord(){
+    public String getWord() {
         return word;
     }
 }
