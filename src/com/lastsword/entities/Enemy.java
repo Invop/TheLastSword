@@ -10,4 +10,7 @@ public class Enemy {
     public void setEnemyHp(int enemyHp) {
         this.enemyHp = enemyHp;
     }
+
+    //hydra - double dmg
+    //
 }
