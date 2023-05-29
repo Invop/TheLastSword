@@ -12,12 +12,12 @@ import java.util.List;
 
 import static com.lastsword.utilities.GetFrames.scaleImages;
 
-public class CharacterSelectionMenuPanel extends JPanel{
+public class CharacterSelectionMenuPanel extends JPanel {
     private List<BufferedImage> idleAnimationHero1;
     private List<BufferedImage> idleAnimationHero2;
     private List<BufferedImage> idleAnimationHero3;
     private static final int animationSpeed = 120;
-    private static final  int animation_delay = 100;
+    private static final int animation_delay = 100;
     private Animation idleAnimation;
     private int currentHeroIndex = 1;
     private JTextArea heroInfoTextArea;
@@ -34,6 +34,7 @@ public class CharacterSelectionMenuPanel extends JPanel{
         add(createTextPanel(), BorderLayout.EAST);
         UpdateHeroInfo(1);
     }
+
     private JPanel createTextPanel() {
         JPanel selectionPanel = new JPanel();
         selectionPanel.setLayout(new BorderLayout());
@@ -93,6 +94,7 @@ public class CharacterSelectionMenuPanel extends JPanel{
 
         return selectionPanel;
     }
+
     private void UpdateHeroInfo(int heroId) {
         String heroInfo;
 
@@ -118,16 +120,18 @@ public class CharacterSelectionMenuPanel extends JPanel{
         heroInfoTextArea.setText(heroInfo);
         repaint();
     }
+
     private void AddIdleFrames() {
-        GetFrames getFrames1 = new GetFrames("src/res/images/sprites/player/fire_vizard/Idle.png",null);
+        GetFrames getFrames1 = new GetFrames("src/res/images/sprites/player/fire_vizard/Idle.png", null);
         idleAnimationHero1 = scaleImages(getFrames1.FramesToList(), 2);
 
-        GetFrames getFrames2 = new GetFrames("src/res/images/sprites/player/samurai_archer/Idle.png",null);
+        GetFrames getFrames2 = new GetFrames("src/res/images/sprites/player/samurai_archer/Idle.png", null);
         idleAnimationHero2 = scaleImages(getFrames2.FramesToList(), 2);
 
-        GetFrames getFrames3 = new GetFrames("src/res/images/sprites/player/samurai_commander/Idle.png",null);
+        GetFrames getFrames3 = new GetFrames("src/res/images/sprites/player/samurai_commander/Idle.png", null);
         idleAnimationHero3 = scaleImages(getFrames3.FramesToList(), 2);
     }
+
     private String getCurrentHeroInfo() {
         switch (currentHeroIndex) {
             case 1:
@@ -140,14 +144,16 @@ public class CharacterSelectionMenuPanel extends JPanel{
                 return "";
         }
     }
-    private void CreateTimer(){
+
+    private void CreateTimer() {
         idleAnimation_timer = new Timer(animation_delay, e -> {
             repaint();
         });
         idleAnimation_timer.start();
     }
+
     @Override
-    protected void paintComponent(Graphics g){
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         int x = 350;
@@ -155,8 +161,4 @@ public class CharacterSelectionMenuPanel extends JPanel{
         idleAnimation.update();
         idleAnimation.draw(g, x, y);
     }
-
-
-
-
 }

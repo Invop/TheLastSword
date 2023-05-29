@@ -7,35 +7,35 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class GetFrames {
     private String filePath;
-    private String fileIdlePath;
+    private final String fileIdlePath;
     private List<BufferedImage> frames;
     private BufferedImage spriteIdleSheet;
     private BufferedImage spriteSheet;
 
-    public GetFrames(String filePath, String fileIdlePath){
-        this.filePath=filePath;
-        this.fileIdlePath=fileIdlePath;
+    public GetFrames(String filePath, String fileIdlePath) {
+        this.filePath = filePath;
+        this.fileIdlePath = fileIdlePath;
     }
-    public GetFrames(String fileIdlePath){
-        this.fileIdlePath=fileIdlePath;
+
+    public GetFrames(String fileIdlePath) {
+        this.fileIdlePath = fileIdlePath;
     }
-    public List<BufferedImage> FramesToList(){
+
+    public List<BufferedImage> FramesToList() {
         try {
             frames = new ArrayList<>();
-            if(filePath!=null) {
+            if (filePath != null) {
                 spriteSheet = ImageIO.read(new File(filePath));
-                for ( BufferedImage frame:
+                for (BufferedImage frame :
                         extractFrames(spriteSheet)) {
                     frames.add(frame);
                 }
             } // Завантаження спрайт-аркуша
-            if(fileIdlePath!=null) {
+            if (fileIdlePath != null) {
                 spriteIdleSheet = ImageIO.read(new File(fileIdlePath));
                 frames.add(extractFirstIdleFrame(spriteIdleSheet));
             }
@@ -45,9 +45,10 @@ public class GetFrames {
         }
         return null;
     }
-    public BufferedImage getFrame(){
+
+    public BufferedImage getFrame() {
         try {
-            if(fileIdlePath!=null) {
+            if (fileIdlePath != null) {
                 spriteIdleSheet = ImageIO.read(new File(fileIdlePath));
                 return extractFirstIdleFrame(spriteIdleSheet);
             }
@@ -56,6 +57,7 @@ public class GetFrames {
         }
         return null;
     }
+
     public static BufferedImage scaleImage(BufferedImage image, double scale) {
         double scaledWidth = image.getWidth() * scale;
         double scaledHeight = image.getHeight() * scale;
@@ -79,7 +81,7 @@ public class GetFrames {
             double scaledWidth = image.getWidth() * scale;
             double scaledHeight = image.getHeight() * scale;
 
-            BufferedImage scaledImage = new BufferedImage((int)scaledWidth, (int)scaledHeight, BufferedImage.TYPE_INT_ARGB);
+            BufferedImage scaledImage = new BufferedImage((int) scaledWidth, (int) scaledHeight, BufferedImage.TYPE_INT_ARGB);
 
             Graphics2D graphics2D = scaledImage.createGraphics();
             graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -93,6 +95,7 @@ public class GetFrames {
 
         return scaledImages;
     }
+
     private static List<BufferedImage> extractFrames(BufferedImage spriteSheet) {
         List<BufferedImage> frames = new ArrayList<>();
 
@@ -173,6 +176,7 @@ public class GetFrames {
         }
         return true;
     }
+
     private static boolean isTransparentColumn(BufferedImage image, int x) {
         for (int y = 0; y < image.getHeight(); y++) {
             if ((image.getRGB(x, y) & 0xFF000000) != 0) {
@@ -181,6 +185,7 @@ public class GetFrames {
         }
         return true;
     }
+
     private static boolean isSameColorColumn(BufferedImage image, int x, int referenceColor) {
         for (int y = 0; y < image.getHeight(); y++) {
             if (image.getRGB(x, y) != referenceColor) {

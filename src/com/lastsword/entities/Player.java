@@ -5,26 +5,30 @@ public class Player {
     private static int playerHp;
     private static String info;
     private static int playerId;
-    private static final int ultChance  = 8;
+    private static final int ultChance = 8;
 
-    public Player(int playerIndx){
-        switch (playerIndx){
-            case 1:{
+    public Player(int playerIndx) {
+        switch (playerIndx) {
+            case 1: {
                 playerHp = 100;
-                playerId=1;
-                info="HeroInfo1";
-                break;}
-            case 2:{
+                playerId = 1;
+                info = "HeroInfo1";
+                break;
+            }
+            case 2: {
                 playerHp = 120;
-                playerId=2;
-                info="HeroInfo2";
-                break;}
-            case 3:{
+                playerId = 2;
+                info = "HeroInfo2";
+                break;
+            }
+            case 3: {
                 playerHp = 150;
-                playerId=3;
-                info="HeroInfo3";
-                break;}
-            default:break;
+                playerId = 3;
+                info = "HeroInfo3";
+                break;
+            }
+            default:
+                break;
         }
     }
 
@@ -33,7 +37,7 @@ public class Player {
     }
 
     public void setScore(int score) {
-        this.score = score;
+        Player.score = score;
     }
 
     public int getPlayerHp() {
@@ -41,10 +45,10 @@ public class Player {
     }
 
     public void setPlayerHp(int playerHp) {
-        this.playerHp = playerHp;
+        Player.playerHp = playerHp;
     }
 
-    public int getUltChance(){
+    public int getUltChance() {
         return ultChance;
     }
 
