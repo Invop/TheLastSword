@@ -1,17 +1,17 @@
 package com.lastsword.graphics;
 
-import java.awt.*;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Animation {
 
-    private final List<BufferedImage> frames;
+    private List<BufferedImage> frames;
     private int currentFrameIndex;
-    private final long animationSpeed;
+    private long animationSpeed;
     private long lastFrameTime;
-    private final boolean loop;
+    private boolean loop;
 
     public Animation(List<BufferedImage> frames, long animationSpeed, boolean loop) {
         this.frames = frames;
@@ -54,12 +54,11 @@ public class Animation {
         BufferedImage currentFrame = frames.get(currentFrameIndex);
         g.drawImage(currentFrame, x, y, null);
     }
-
     public int getCurrentFrameIndex() {
         return currentFrameIndex;
     }
 
-    public List<BufferedImage> getFrames() {
+    public List<BufferedImage> getFrames(){
         return frames;
     }
 }
