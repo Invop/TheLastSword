@@ -10,4 +10,8 @@ public class Enemy {
     public void setEnemyHp(int enemyHp) {
         this.enemyHp = enemyHp;
     }
+
+    //hydra - double dmg
+    //jug - 2x hp
+    //magorix - 1st stage (1 hit ) 2nd (4-5?)
 }
