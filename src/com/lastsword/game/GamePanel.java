@@ -1,5 +1,6 @@
 package com.lastsword.game;
 
+import com.lastsword.entities.Enemy;
 import com.lastsword.entities.Player;
 import com.lastsword.graphics.Animation;
 import com.lastsword.graphics.ButtonRenderer;
@@ -23,17 +24,20 @@ public class GamePanel extends JPanel {
             ultAnimationPlayer, arrowAnimationPlayer,
             walkAnimationPlayer, runAnimationPlayer,
             hurtAnimationPlayer, deadAnimationPlayer;
-    private Animation attackAnimationEnemy,
-            ultAnimationEnemy, arrowAnimationEnemy,
+    private Animation attack1AnimationEnemy, attack2AnimationEnemy,
+            ultAnimationEnemy, projectileAnimationEnemy,
             walkAnimationEnemy, runAnimationEnemy,
-            hurtAnimationEnemy, deadAnimationEnemy;
+            hurtAnimationEnemy, deadAnimationEnemy,
+            idleAnimationEnemy;
     private Timer animation_timer, arrow_timer;
     private WordGenerator wordGenerator;
     private ButtonRenderer buttonRenderer;
     private final KeyboardInputs keyboardInputs;
-    private List<BufferedImage> attackFramesPlayer, ultFramesPlayer, walkFramesPlayer, runFramesPlayer, hurtFramesPlayer, deadFramesPlayer;
-    private List<BufferedImage> attackFramesEnemy, ultFramesEnemy, walkFramesEnemy, runFramesEnemy, hurtFramesEnemy, deadFramesEnemy;
+    private List<BufferedImage> attackFramesPlayer, ultFramesPlayer, walkFramesPlayer, runFramesPlayer, hurtFramesPlayer, deadFramesPlayer, idleFramesPlayer;
+    private List<BufferedImage> attackFramesEnemy, walkFramesEnemy, hurtFramesEnemy, deadFramesEnemy, idleFramesEnemy;
+    private List<List<BufferedImage>> enemyUltCollection;
     private BufferedImage arrow;
+    private BufferedImage projectile;
     private static boolean attackAnimationStartPlayer = false,
             ultAnimationStartPlayer = false,
             arrowAnimationStartPlayer = false,
@@ -42,14 +46,14 @@ public class GamePanel extends JPanel {
             hurtAnimationStartPlayer = false,
             deadAnimationStartPlayer = false,
             isImageVisiblePlayer = false;
-    private static boolean attackAnimationStartEnemy = false,
-    ultAnimationStartPlayerEnemy = false,
-    arrowAnimationStartPlayerEnemy = false,
-    walkAnimationStartPlayerEnemy = false,
-    runAnimationStartPlayerEnemy = false,
-    hurtAnimationStartPlayerEnemy = false,
-    deadAnimationStartPlayerEnemy = false,
-    isImageVisiblePlayerEnemy = false;
+    private static final boolean attackAnimationStartEnemy = false;
+    private static final boolean ultAnimationStartPlayerEnemy = false;
+    private static final boolean arrowAnimationStartPlayerEnemy = false;
+    private static final boolean walkAnimationStartPlayerEnemy = false;
+    private static final boolean runAnimationStartPlayerEnemy = false;
+    private static final boolean hurtAnimationStartPlayerEnemy = false;
+    private static final boolean deadAnimationStartPlayerEnemy = false;
+    private static final boolean isImageVisiblePlayerEnemy = false;
     private static final int defaultAnimationSpeed = 100;
     private static int ultAnimationSpeed = 100;
     private final int attackAnimation_delay = 100;
@@ -67,28 +71,14 @@ public class GamePanel extends JPanel {
         setSize(1280, 720);
         setFocusable(true);
         CreateTimer();
-        InitFrames();
-        AddAnimations();
+        InitPlayerFrames();
+        AddPlayerAnimations();
         RenderRandomBtns();
         addKeyListener(keyboardInputs = new KeyboardInputs(wordGenerator.getWord(), buttonRenderer));
     }
 
-    private void InitFrames() {
-
-        //move
-        AddPlayerWalkFrames();
-        AddPlayerRunFrames();
-
-        //dmg out
-        AddPlayerAttackFrames();
-        AddPlayerUltFrames();
-        if (player.getPlayerId() == 2) {
-            AddPlayerArrowFrame();
-        }
-
-        //dmg in
-        AddPlayerHurtFrames();
-        AddPlayerDeadFrames();
+    public void addCollection(List<BufferedImage> images) {
+        enemyUltCollection.add(images);
     }
 
     @Override
@@ -108,28 +98,23 @@ public class GamePanel extends JPanel {
         if (attackAnimationStartPlayer) {
             attackAnimationPlayer.update();
             attackAnimationPlayer.draw(g, x, y);
-        }
-        else if (ultAnimationStartPlayer) {
+        } else if (ultAnimationStartPlayer) {
             ultAnimationPlayer.update();
             ultAnimationPlayer.draw(g, x, y);
             // Check if ultAnimation has finished
             if (ultAnimationPlayer.getCurrentFrameIndex() == ultAnimationPlayer.getFrames().size() - 4 && player.getPlayerId() == 2) {
                 arrowAnimationStartPlayer = true;
             }
-        }
-        else if (walkAnimationStartPlayer) {
+        } else if (walkAnimationStartPlayer) {
             walkAnimationPlayer.update();
             walkAnimationPlayer.draw(g, x, y);
-        }
-        else if (runAnimationStartPlayer) {
+        } else if (runAnimationStartPlayer) {
             runAnimationPlayer.update();
             runAnimationPlayer.draw(g, x, y);
-        }
-        else if (hurtAnimationStartPlayer) {
+        } else if (hurtAnimationStartPlayer) {
             hurtAnimationPlayer.update();
             hurtAnimationPlayer.draw(g, x, y);
-        }
-        else if (deadAnimationStartPlayer) {
+        } else if (deadAnimationStartPlayer) {
             deadAnimationPlayer.update();
             deadAnimationPlayer.draw(g, x, y);
         }
@@ -141,6 +126,7 @@ public class GamePanel extends JPanel {
         buttonRenderer = new ButtonRenderer(letterValues);
     }
 
+    //player
     private void AddPlayerAttackFrames() {
         GetFrames getFrames1, getFrames2, getFrames3;
         List<BufferedImage> frames1 = null, frames2 = null, frames3 = null;
@@ -290,7 +276,7 @@ public class GamePanel extends JPanel {
             }
         }
 
-       hurtFramesPlayer = new ArrayList<>();
+        hurtFramesPlayer = new ArrayList<>();
         if (frames1 != null) {
             hurtFramesPlayer.addAll(frames1);
         }
@@ -329,6 +315,205 @@ public class GamePanel extends JPanel {
         arrow = scaleImage(getFrame.getFrame(), 2);
     }
 
+    private void InitPlayerFrames() {
+
+        //move
+        AddPlayerWalkFrames();
+        AddPlayerRunFrames();
+
+        //dmg out
+        AddPlayerAttackFrames();
+        AddPlayerUltFrames();
+        if (player.getPlayerId() == 2) {
+            AddPlayerArrowFrame();
+        }
+
+        //dmg in
+        AddPlayerHurtFrames();
+        AddPlayerDeadFrames();
+    }
+
+    //enemy
+    private void AddEnemyAttackFrames() {
+        GetFrames getFrames1, getFrames2;
+        List<BufferedImage> frames1 = null, frames2 = null;
+        switch (Enemy.getEnemyId()) {
+            case 1 -> {
+                getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/Attack1.png",
+                        null);
+                frames1 = scaleImages(getFrames1.FramesToList(), 2);
+            }
+            case 2 -> {
+                getFrames1 = new GetFrames("src/res/images/sprites/enemy/not_bosses/juggernaut/Attack.png",
+                        null);
+                frames1 = scaleImages(getFrames1.FramesToList(), 2);
+            }
+            case 3 -> {
+                getFrames1 = new GetFrames("src/res/images/sprites/enemy/not_bosses/hydra/Attack1.png",
+                        null);
+                frames1 = scaleImages(getFrames1.FramesToList(), 2);
+                getFrames2 = new GetFrames("src/res/images/sprites/enemy/not_bosses/hydra/Attack2.png",
+                        null);
+                frames2 = scaleImages(getFrames2.FramesToList(), 2);
+            }
+        }
+
+        attackFramesEnemy = new ArrayList<>();
+        if (frames1 != null) {
+            attackFramesEnemy.addAll(frames1);
+        }
+        if (frames2 != null) {
+            attackFramesEnemy.addAll(frames2);
+        }
+    }
+
+    private void AddEnemyUltFrames() {
+        GetFrames getFrames1;
+        getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/Summon_Juggernaut.png",
+                null);
+        addCollection(scaleImages(getFrames1.FramesToList(), 2));
+        getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/MagorixUltAttack1.png",
+                null);
+        addCollection(scaleImages(getFrames1.FramesToList(), 2));
+        getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/MagorixUltAttack2.png",
+                null);
+        addCollection(scaleImages(getFrames1.FramesToList(), 2));
+        getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/MagorixUltWalk.png",
+                null);
+        addCollection(scaleImages(getFrames1.FramesToList(), 2));
+        getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/MagorixUltHurt.png",
+                null);
+        addCollection(scaleImages(getFrames1.FramesToList(), 2));
+        getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/MagorixUltIdle.png",
+                null);
+        addCollection(scaleImages(getFrames1.FramesToList(), 2));
+
+    }
+
+    private void AddEnemyWalkFrames() {
+        GetFrames getFrames1;
+        List<BufferedImage> frames1 = null;
+        switch (Enemy.getEnemyId()) {
+            case 1 -> {
+                getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/Walk.png",
+                        null);
+                frames1 = scaleImages(getFrames1.FramesToList(), 2);
+            }
+            case 2 -> {
+                getFrames1 = new GetFrames("src/res/images/sprites/enemy/not_bosses/juggernaut/Walk.png",
+                        null);
+                frames1 = scaleImages(getFrames1.FramesToList(), 2);
+            }
+            case 3 -> {
+                getFrames1 = new GetFrames("src/res/images/sprites/enemy/not_bosses/hydra/Walk.png",
+                        null);
+                frames1 = scaleImages(getFrames1.FramesToList(), 2);
+            }
+        }
+
+        walkFramesEnemy = new ArrayList<>();
+        if (frames1 != null) {
+            walkFramesEnemy.addAll(frames1);
+        }
+    }
+
+    private void AddEnemyHurtFrames() {
+        GetFrames getFrames1;
+        List<BufferedImage> frames1 = null;
+        switch (Enemy.getEnemyId()) {
+            case 1 -> {
+                getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/Hurt.png",
+                        null);
+                frames1 = scaleImages(getFrames1.FramesToList(), 2);
+            }
+            case 2 -> {
+                getFrames1 = new GetFrames("src/res/images/sprites/enemy/not_bosses/juggernaut/Hurt.png",
+                        null);
+                frames1 = scaleImages(getFrames1.FramesToList(), 2);
+            }
+            case 3 -> {
+                getFrames1 = new GetFrames("src/res/images/sprites/enemy/not_bosses/hydra/Hurt.png",
+                        null);
+                frames1 = scaleImages(getFrames1.FramesToList(), 2);
+            }
+        }
+
+        hurtFramesEnemy = new ArrayList<>();
+        if (frames1 != null) {
+            hurtFramesEnemy.addAll(frames1);
+        }
+    }
+
+    private void AddEnemyDeadFrames() {
+        GetFrames getFrames1;
+        List<BufferedImage> frames1 = null;
+        switch (Enemy.getEnemyId()) {
+            case 1 -> {
+                getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/Death.png",
+                        null);
+                frames1 = scaleImages(getFrames1.FramesToList(), 2);
+            }
+            case 2 -> {
+                getFrames1 = new GetFrames("src/res/images/sprites/enemy/not_bosses/juggernaut/Death.png",
+                        null);
+                frames1 = scaleImages(getFrames1.FramesToList(), 2);
+            }
+            case 3 -> {
+                getFrames1 = new GetFrames("src/res/images/sprites/enemy/not_bosses/hydra/Death.png",
+                        null);
+                frames1 = scaleImages(getFrames1.FramesToList(), 2);
+            }
+        }
+
+        deadFramesEnemy = new ArrayList<>();
+        if (frames1 != null) {
+            deadFramesEnemy.addAll(frames1);
+        }
+    }
+
+    private void AddEnemyIdleFrames() {
+        GetFrames getFrames1;
+        List<BufferedImage> frames1 = null;
+        switch (Enemy.getEnemyId()) {
+            case 1 -> {
+                getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/Idle.png",
+                        null);
+                frames1 = scaleImages(getFrames1.FramesToList(), 2);
+            }
+            case 2 -> {
+                getFrames1 = new GetFrames("src/res/images/sprites/enemy/not_bosses/juggernaut/Idle.png",
+                        null);
+                frames1 = scaleImages(getFrames1.FramesToList(), 2);
+            }
+            case 3 -> {
+                getFrames1 = new GetFrames("src/res/images/sprites/enemy/not_bosses/hydra/Idle.png",
+                        null);
+                frames1 = scaleImages(getFrames1.FramesToList(), 2);
+            }
+        }
+
+        idleFramesEnemy = new ArrayList<>();
+        if (frames1 != null) {
+            idleFramesEnemy.addAll(frames1);
+        }
+    }
+
+    private void AddEnemyProjectileFrame() {
+        GetFrames getFrame;
+        getFrame = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/Projectile.png");
+        projectile = scaleImage(getFrame.getFrame(), 2);
+    }
+
+    private void InitEnemyFrames() {
+        AddEnemyAttackFrames();
+        AddEnemyUltFrames();
+        AddEnemyWalkFrames();
+        AddEnemyHurtFrames();
+        AddEnemyDeadFrames();
+        AddEnemyIdleFrames();
+        AddEnemyProjectileFrame();
+    }
+
     private void CreateTimer() {
         animation_timer = new Timer(attackAnimation_delay, e -> {
             repaint();
@@ -344,7 +529,7 @@ public class GamePanel extends JPanel {
         }
     }
 
-    private void AddAnimations() {
+    private void AddPlayerAnimations() {
         if (player.getPlayerId() == 3) {
             ultAnimationSpeed = 160;
         } else {
@@ -357,6 +542,24 @@ public class GamePanel extends JPanel {
         runAnimationPlayer = new Animation(runFramesPlayer, defaultAnimationSpeed, false);
         hurtAnimationPlayer = new Animation(hurtFramesPlayer, defaultAnimationSpeed, false);
         deadAnimationPlayer = new Animation(deadFramesPlayer, defaultAnimationSpeed, false);
+    }
+
+    private void AddEnemyAnimation() {
+        if (Enemy.isIsBossFight()) {
+            attack1AnimationEnemy = new Animation(enemyUltCollection.get(1), defaultAnimationSpeed, false);
+            attack2AnimationEnemy = new Animation(enemyUltCollection.get(2), defaultAnimationSpeed, false);
+            projectileAnimationEnemy = new Animation(projectile);
+            walkAnimationEnemy = new Animation(enemyUltCollection.get(3), defaultAnimationSpeed, false);
+            hurtAnimationEnemy = new Animation(enemyUltCollection.get(4), defaultAnimationSpeed, false);
+            idleAnimationEnemy = new Animation(enemyUltCollection.get(5), defaultAnimationSpeed, false);
+        } else {
+            attack1AnimationEnemy = new Animation(attackFramesEnemy, defaultAnimationSpeed, false);
+            if (Enemy.getEnemyId() == 1) projectileAnimationEnemy = new Animation(projectile);
+            walkAnimationEnemy = new Animation(walkFramesEnemy, defaultAnimationSpeed, false);
+            hurtAnimationEnemy = new Animation(hurtFramesEnemy, defaultAnimationSpeed, false);
+            deadAnimationEnemy = new Animation(deadFramesEnemy, defaultAnimationSpeed, false);
+            idleAnimationEnemy = new Animation(idleFramesEnemy, defaultAnimationSpeed, false);
+        }
     }
 
     public static void setAttackAnimationStartPlayer(boolean state) {
