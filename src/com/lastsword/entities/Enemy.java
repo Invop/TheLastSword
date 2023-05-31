@@ -10,10 +10,6 @@ public class Enemy {
         return enemyHp;
     }
 
-    public static void setEnemyHp(int enemyHp) {
-        Enemy.enemyHp = enemyHp;
-    }
-
     public static int getEnemyId() {
         return enemyId;
     }
@@ -26,11 +22,7 @@ public class Enemy {
         return enemyDmg;
     }
 
-    public static void setEnemyDmg(int enemyDmg) {
-        Enemy.enemyDmg = enemyDmg;
-    }
-
-    public static boolean isIsBossFight() {
+    public static boolean isBossFight() {
         return isBossFight;
     }
 
@@ -39,7 +31,7 @@ public class Enemy {
     }
 
 
-    //hydra - double dmg
-    //jug - 2x hp
-    //magorix - 1st stage (1 hit ) 2nd (4-5?)
+    //hydra - double dmg id 3
+    //jug - 2x hp id 2
+    //magorix - 1st stage (1 hit ) 2nd (4-5?) id 1
 }
