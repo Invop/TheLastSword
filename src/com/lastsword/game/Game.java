@@ -1,15 +1,9 @@
 package com.lastsword.game;
 
 import com.lastsword.audio.AudioPlayer;
-import com.lastsword.entities.Enemy;
 import com.lastsword.entities.Player;
 import com.lastsword.menu.CharacterSelectionMenuPanel;
 import com.lastsword.menu.CharaterSelectionMenuWindow;
-
-import java.util.Random;
-
-import static com.lastsword.game.GamePanel.AddEnemyAnimation;
-import static com.lastsword.game.GamePanel.InitEnemyFrames;
 
 
 public class Game {
@@ -26,7 +20,7 @@ public class Game {
 
         selectionMenuPanel = new CharacterSelectionMenuPanel();
         charaterSelectionMenuWindow = new CharaterSelectionMenuWindow(selectionMenuPanel);
-
+//
 //        audioPlayer = new AudioPlayer("src/res/music/MainTheme.wav");
 //        audioPlayer.loop();
     }

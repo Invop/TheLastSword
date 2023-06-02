@@ -4,7 +4,7 @@ public class Enemy {
     private static int enemyHp;
     private static int enemyId;
     private static int enemyDmg;
-    private static boolean isBossFight=false;
+    private static boolean isBossFight = false;
 
     public static int getEnemyHp() {
         return enemyHp;

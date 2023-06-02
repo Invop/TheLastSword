@@ -1,6 +1,5 @@
 package com.lastsword.input;
 
-import com.lastsword.game.Game;
 import com.lastsword.game.GamePanel;
 import com.lastsword.graphics.ButtonRenderer;
 import com.lastsword.utilities.Letter;
@@ -15,16 +14,27 @@ public class KeyboardInputs implements KeyListener {
     private static String wordToMatch;
     private int currentIndex;
     private ButtonRenderer buttonRenderer;
+    int cnt=0;
 
-    public void setCurrentIndex(){
+    public KeyboardInputs(){
+        if(cnt==0){
+            GamePanel.playerMoveToThePoint = true;
+            GamePanel.enemyMoveToThePoint = true;
+            cnt++;
+        }
+    }
+    public void setCurrentIndex() {
         this.currentIndex = 0;
     }
-    public void setWordToMatch(String word){
+
+    public void setWordToMatch(String word) {
         wordToMatch = word;
     }
-    public void setButtonRenderer(ButtonRenderer btnRenderer){
+
+    public void setButtonRenderer(ButtonRenderer btnRenderer) {
         buttonRenderer = btnRenderer;
     }
+
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -47,12 +57,15 @@ public class KeyboardInputs implements KeyListener {
                     buttonRenderer.updateImage(currentIndex - 1);
                     if (currentIndex == wordToMatch.length()) {
                         currentIndex = 0;
-                        GamePanel.isCarouselActive=true;
-                        RenderRandomBtns();
+                        if(cnt>0) {
+                            GamePanel.isCarouselActive = true;
+                            GamePanel.startCarousel = true;
+                        }
                     }
                 } else {
+                    System.out.println("false");
+                    GamePanel.isEnemyAttack=true;
                     currentIndex = 0;
-                    GamePanel.isCarouselActive=false;
                 }
 
                 return;

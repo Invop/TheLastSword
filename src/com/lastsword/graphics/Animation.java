@@ -54,9 +54,10 @@ public class Animation {
         BufferedImage currentFrame = frames.get(currentFrameIndex);
         g.drawImage(currentFrame, x, y, null);
     }
+
     public void drawEn(Graphics g, int x, int y) {
         BufferedImage currentFrame = frames.get(currentFrameIndex);
-        g.drawImage(currentFrame, x-40, y, null);
+        g.drawImage(currentFrame, x - 40, y, null);
 
     }
 
