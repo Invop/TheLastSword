@@ -33,8 +33,7 @@ public class GamePanel extends JPanel {
             idleAnimationPlayer,currentPA;
     private static Animation attack1AnimationEnemy, attack2AnimationEnemy,
             ultAnimationEnemy, projectileAnimationEnemy,
-            walkAnimationEnemy, runAnimationEnemy,
-            hurtAnimationEnemy, deadAnimationEnemy,
+            walkAnimationEnemy, hurtAnimationEnemy, deadAnimationEnemy,
             idleAnimationEnemy,currentEA;
     private Timer animation_timer, arrow_timer;
     private static WordGenerator wordGenerator;
@@ -46,19 +45,18 @@ public class GamePanel extends JPanel {
     private BufferedImage arrow;
     private static BufferedImage projectile;
     private static final int defaultAnimationSpeed = 100;
-    private final int attackAnimation_delay = 100;
-    private final int arrowAnimation_delay = 90;
     private static Player player;
     private static int[] letterValues;
     private final Random random = new Random();
     private int randomEnemy;
 
-    public static boolean isPlayerAttack, isEnemyAttack = false,
-            isPlayerWalk, isEnemyWalk,
-            isPlayerHurt, isEnemyHurt,
-            isPlayerDead, isEnemyDead,
-            isPlayerIdle, isEnemyIdle,
-            isPlayerUlt, isEnemyUlt;
+    public static boolean isPlayerAttack = false, isEnemyAttack1 = false,isEnemyAttack2= false,
+            isPlayerWalk = false, isEnemyWalk = false,
+            isPlayerHurt = false, isEnemyHurt = false,
+            isPlayerDead = false, isEnemyDead = false,
+            isPlayerIdle = false, isEnemyIdle = false,
+            isPlayerUlt = false, isEnemyUlt = false,
+            isPlayerRange = false, isEnemyRange = false;
     //бг
     private final int imageWidth = 1280;
     private final int imageHeight = 720;
@@ -66,22 +64,16 @@ public class GamePanel extends JPanel {
     private int x1 = 0;
     private int x2 = imageWidth;
     public static boolean isCarouselActive = false;
-    private Timer screen_timer;
+    public static Timer screen_timer;
     private int shiftX = 0;
     private boolean playAudio;
-    public static boolean playerMoveToThePoint = false;
-    public static boolean enemyMoveToThePoint = false;
-    private int shiftXPlayer = 0;
-    public static boolean playerIdle = false;
-    private int shiftXEnemy;
-    public static boolean enemyIdle = false;
-    int cnt=0;
-    public static boolean startCarousel = false;
-    private static boolean enemyAttack = false;
-    private int EnPoint=0;
-    private int PlPoint=0;
-    private int EnIdlePoint=0;
+    private int playerShiftX = 0,enemyShiftX=0;
+    public static int playerPoint =200 ,enemyPoint =200;
+    private static int currentPlayerPoint=-100,currentEnemyPoint=1280;
+    private Game game;
+    private static int wordCnt=0;
     public GamePanel() {
+        game = new Game();
         keyboardInputs = new KeyboardInputs();
         player = Game.getSelectedPlayer();
         System.out.println(player.getInfo());
@@ -94,16 +86,9 @@ public class GamePanel extends JPanel {
         AddPlayerAnimations();
         RenderRandomBtns();
         AddBackground();
-        PlPoint=200;
-        PlayerMoveToThePoint();
-        EnPoint=200;
-        EnIdlePoint=1080;
-        EnemyMoveToThePoint();
         ScreenMove();
-
-        System.out.println("rdy");
-
     }
+
 
     public void AddBackground() {
         try {
@@ -116,75 +101,117 @@ public class GamePanel extends JPanel {
     public static void addCollection(List<BufferedImage> images) {
         enemyUltCollection.add(images);
     }
-
     public boolean isCollision(Rectangle rect1, Rectangle rect2) {
         return rect1.intersects(rect2);
     }
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
         //bg move
         if (backgroundImage != null) {
             g.drawImage(backgroundImage, x1 - shiftX, 0, imageWidth, imageHeight, null);
             g.drawImage(backgroundImage, x2 - shiftX, 0, imageWidth, imageHeight, null);
-            if (startCarousel) {
+            if (isCarouselActive && player.getPlayerHp()>0) {
                 currentPA = walkAnimationPlayer;
                 currentPA.update();
-                currentPA.draw(g, 105, 280);
+                currentPA.draw(g, currentPlayerPoint, 280);
             }
         }
-        if (!isCarouselActive) {
-             if (playerIdle && !startCarousel) {
+        if(!isCarouselActive) {
+            if (isPlayerWalk) {
+                currentPA = walkAnimationPlayer;
+                currentPA.update();
+                currentPA.draw(g, currentPlayerPoint + playerShiftX, 280);
+            }
+            else if (isPlayerIdle) {
                 currentPA = idleAnimationPlayer;
                 currentPA.update();
-                currentPA.draw(g, 100, 280);
-            } else if (playerMoveToThePoint && !startCarousel) {
-                currentPA = walkAnimationPlayer;
-                currentPA.update();
-                currentPA.draw(g, -100 + shiftXPlayer, 280);
+                currentPA.draw(g, currentPlayerPoint, 280);
             }
-            if (enemyMoveToThePoint) {
+            else if (isPlayerAttack) {
+                currentPA = attackAnimationPlayer;
+                currentPA.update();
+                currentPA.draw(g, currentPlayerPoint, 280);
+                Rectangle PlayerRect = currentPA.getBounds(currentPlayerPoint, 280);
+                Rectangle EnemyRect = currentEA.getBounds(currentEnemyPoint, 280);
+                if(isCollision(EnemyRect,PlayerRect)){
+                    isEnemyIdle=false;
+                    isEnemyHurt=true;
+                }else{
+                    isEnemyHurt=false;
+                    isEnemyIdle=true;
+                }
+            }
+            else if (isPlayerDead) {
+                currentPA = deadAnimationPlayer;
+                currentPA.update();
+                currentPA.draw(g, currentPlayerPoint, 280);
+            }
+            else if (isPlayerHurt) {
+                currentPA = hurtAnimationPlayer;
+                currentPA.update();
+                currentPA.draw(g, currentPlayerPoint, 280);
+            }
+            else if (isPlayerUlt) {
+                currentPA = ultAnimationPlayer;
+                currentPA.update();
+                currentPA.draw(g, currentPlayerPoint, 280);
+            }
+
+
+            if (isEnemyWalk) {
                 currentEA = walkAnimationEnemy;
                 currentEA.update();
-                currentEA.draw(g, 1280 - shiftXEnemy, 285);
-            }
-            else if (isEnemyAttack) {
-                EnPoint=940;
-                if(enemyAttack ){currentEA = attack1AnimationEnemy;
-                    currentEA.update();
-                    currentEA.draw(g, 140, 285);
-                if(currentEA.getCurrentFrameIndex() == attackFramesEnemy.size()-1){
-                    enemyIdle=true;
-                    isEnemyAttack=false;
-                    EnIdlePoint=163;
-                }
-                }
-                else {
-                    currentEA = walkAnimationEnemy;
-                    currentEA.update();
-                    currentEA.draw(g, 1080 - shiftXEnemy, 285);
-                }
-
-
-            }
-            else if (enemyIdle) {
+                currentEA.draw(g, currentEnemyPoint, 280);
+            } else if (isEnemyIdle) {
                 currentEA = idleAnimationEnemy;
                 currentEA.update();
-                currentEA.draw(g, EnIdlePoint, 285);
+                currentEA.draw(g, currentEnemyPoint, 280);
+            } else if (isEnemyAttack1) {
+                currentEA = attack1AnimationEnemy;
+                currentEA.update();
+                currentEA.draw(g, currentEnemyPoint, 280);
+            } else if (isEnemyAttack2) {
+                currentEA = attack2AnimationEnemy;
+                currentEA.update();
+                currentEA.draw(g, currentEnemyPoint, 280);
+            } else if (isEnemyDead) {
+                currentEA = deadAnimationEnemy;
+                currentEA.update();
+                currentEA.draw(g, currentEnemyPoint, 280);
+            } else if (isEnemyHurt) {
+                currentEA = hurtAnimationEnemy;
+                currentEA.update();
+                currentEA.draw(g, currentEnemyPoint, 280);
+            } else if (isEnemyUlt) {
+                currentEA = ultAnimationEnemy;
+                currentEA.update();
+                currentEA.draw(g, currentEnemyPoint, 280);
             }
         }
-
         buttonRenderer.draw(g, 500, 600);
     }
 
 
     public static void RenderRandomBtns() {
-        wordGenerator = new WordGenerator(3);
-        letterValues = wordGenerator.getLetterValues();
-        buttonRenderer = new ButtonRenderer(letterValues);
-        keyboardInputs.setCurrentIndex();
-        keyboardInputs.setWordToMatch(wordGenerator.getWord());
-        keyboardInputs.setButtonRenderer(buttonRenderer);
+        if(wordCnt==0){
+            letterValues = new int[]{24, 17, 23,16,17};
+            buttonRenderer = new ButtonRenderer(letterValues);
+            KeyboardInputs.setCurrentIndex();
+            KeyboardInputs.setButtonRenderer(buttonRenderer);
+            KeyboardInputs.setWordToMatch("START");
+            wordCnt++;
+        }
+        else {
+            wordGenerator = new WordGenerator(3);
+            letterValues = wordGenerator.getLetterValues();
+            buttonRenderer = new ButtonRenderer(letterValues);
+            KeyboardInputs.setCurrentIndex();
+            KeyboardInputs.setButtonRenderer(buttonRenderer);
+            KeyboardInputs.setWordToMatch(wordGenerator.getWord());
+            System.out.println(wordGenerator.getWord());
+        }
     }
 
     //player
@@ -581,78 +608,54 @@ public class GamePanel extends JPanel {
         if (Enemy.isBossFight()) AddEnemyUltFrames();
     }
 
-
-    private void  PlayerMoveToThePoint(){
+    public void PlayerMove(int point){
         animation_timer = new Timer(20, e -> {
-            if (playerMoveToThePoint) {
-                if (shiftXPlayer< PlPoint) {
-                    shiftXPlayer += 5;
-                    this.removeKeyListener(keyboardInputs);
-                    playAudio = true;
+            if (isPlayerWalk) {
+                if (currentPlayerPoint < point) {
+                    currentPlayerPoint += 5;
                 } else {
-                    if (playAudio) {
-                        playAudio = false;
-                        audioPlayer = new AudioPlayer("src/res/music/get_ready.wav");
-                        audioPlayer.setLoop(false);
-                        audioPlayer.play();
-                    }
-                    this.addKeyListener(keyboardInputs);
-                    shiftXPlayer = 0;
-                    x1 = 0;
-                    x2 = imageWidth;
-                    playerMoveToThePoint = false;
-                    playerIdle = true;
+                    isPlayerWalk = false;
+                    isPlayerIdle=true;
                 }
-            }
-            repaint();
+                // Викликаємо метод перерисування
+            }repaint();
         });
         animation_timer.start();
-
     }
-    private void  EnemyMoveToThePoint(){
+    public void EnemyMove(int point){
         animation_timer = new Timer(20, e -> {
-            if (enemyMoveToThePoint) {
-                if (shiftXEnemy < EnPoint) {
-                    shiftXEnemy += 5;
+            if (isEnemyWalk) {
+                if (currentEnemyPoint > point) {
+                    currentEnemyPoint -= 5;
                 } else {
-                    shiftXEnemy=0;
-                    enemyMoveToThePoint = false;
-                    enemyIdle = true;
+                    isEnemyWalk = false;
+                    isEnemyIdle=true;
                 }
-            }
-            if (isEnemyAttack) {
-                if (shiftXEnemy < EnPoint) {
-                    shiftXEnemy += 5;
-                } else {
-                    shiftXEnemy=0;
-                    enemyIdle= false;
-                    enemyAttack = true;
-                }
-            }
-            repaint();
+                // Викликаємо метод перерисування
+            }repaint();
         });
         animation_timer.start();
-
     }
     private void ScreenMove(){
         screen_timer = new Timer(20, e -> {
-            if (isCarouselActive && startCarousel) {
+            if (isCarouselActive) {
                 if (shiftX < imageWidth) {
-                    shiftX += 7; // Оновлюємо зміщення по осі X
+                    shiftX += 5; // Оновлюємо зміщення по осі X
                     this.removeKeyListener(keyboardInputs);
                     playAudio=true;
                 } else {
-                    startCarousel=false;
+                    isCarouselActive = false;
                     RenderRandomBtns();
+                    this.addKeyListener(keyboardInputs);
+                    Game.PlayerMoveToThePoint(700);
+                    Game.EnemyMoveToThePoint(800);
                     shiftX = 0;
                     x1 = 0;
                     x2 = imageWidth;
-                    isCarouselActive = false;
-                    playerMoveToThePoint=true;
-                    enemyMoveToThePoint=true;
+
                 }
-                repaint(); // Викликаємо метод перерисування
-            }
+                 // Викликаємо метод перерисування
+            }repaint();
         });
         screen_timer.start();
     }
@@ -669,6 +672,7 @@ public class GamePanel extends JPanel {
 
     public static void AddEnemyAnimation() {
         if (Enemy.isBossFight()) {
+            ultAnimationEnemy = new Animation(enemyUltCollection.get(0),defaultAnimationSpeed,false);
             attack1AnimationEnemy = new Animation(enemyUltCollection.get(1), defaultAnimationSpeed, false);
             attack2AnimationEnemy = new Animation(enemyUltCollection.get(2), defaultAnimationSpeed, false);
             projectileAnimationEnemy = new Animation(projectile);

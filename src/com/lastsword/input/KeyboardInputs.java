@@ -1,5 +1,6 @@
 package com.lastsword.input;
 
+import com.lastsword.game.Game;
 import com.lastsword.game.GamePanel;
 import com.lastsword.graphics.ButtonRenderer;
 import com.lastsword.utilities.Letter;
@@ -8,30 +9,26 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import static com.lastsword.game.GamePanel.RenderRandomBtns;
+import static com.lastsword.game.GamePanel.screen_timer;
 
 public class KeyboardInputs implements KeyListener {
 
     private static String wordToMatch;
-    private int currentIndex;
-    private ButtonRenderer buttonRenderer;
+    private static int currentIndex;
+    private static ButtonRenderer buttonRenderer;
     int cnt=0;
 
     public KeyboardInputs(){
-        if(cnt==0){
-            GamePanel.playerMoveToThePoint = true;
-            GamePanel.enemyMoveToThePoint = true;
-            cnt++;
-        }
     }
-    public void setCurrentIndex() {
-        this.currentIndex = 0;
+    public static void setCurrentIndex() {
+        currentIndex = 0;
     }
 
-    public void setWordToMatch(String word) {
+    public  static void setWordToMatch(String word) {
         wordToMatch = word;
     }
 
-    public void setButtonRenderer(ButtonRenderer btnRenderer) {
+    public  static void setButtonRenderer(ButtonRenderer btnRenderer) {
         buttonRenderer = btnRenderer;
     }
 
@@ -57,17 +54,12 @@ public class KeyboardInputs implements KeyListener {
                     buttonRenderer.updateImage(currentIndex - 1);
                     if (currentIndex == wordToMatch.length()) {
                         currentIndex = 0;
-                        if(cnt>0) {
-                            GamePanel.isCarouselActive = true;
-                            GamePanel.startCarousel = true;
-                        }
+                        GamePanel.isCarouselActive=true;
                     }
                 } else {
-                    System.out.println("false");
-                    GamePanel.isEnemyAttack=true;
+                    Game.PlayerAttack();
                     currentIndex = 0;
                 }
-
                 return;
             }
         }

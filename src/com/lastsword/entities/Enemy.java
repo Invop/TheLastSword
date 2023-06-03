@@ -30,6 +30,10 @@ public class Enemy {
         Enemy.isBossFight = isBossFight;
     }
 
+    public static void setEnemyHp(int enemyHp) {
+        Enemy.enemyHp = enemyHp;
+    }
+
 
     //hydra - double dmg id 3
     //jug - 2x hp id 2

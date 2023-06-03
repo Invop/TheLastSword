@@ -9,7 +9,9 @@ public enum Letter {
     H(28),
     J(29),
     K(30),
-    L(31);
+    L(31),
+    R(16),
+    T(17);
     private final int numericValue;
 
     Letter(int numericValue) {
