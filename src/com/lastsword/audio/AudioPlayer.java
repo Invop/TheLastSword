@@ -6,7 +6,6 @@ import java.io.IOException;
 
 public class AudioPlayer {
     private Clip clip;
-    private boolean isPlaying;
 
     public AudioPlayer(String path) {
         play(path);
@@ -24,49 +23,33 @@ public class AudioPlayer {
 
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(audioStream);
-
-            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-
-            float initialVolume = 0.3f; // 20%
-            setVolume(gainControl, initialVolume);
-
-            clip.addLineListener(event -> {
-                if (event.getType() == LineEvent.Type.STOP) {
-                    if (isPlaying) {
-                        clip.setMicrosecondPosition(0);
-                        clip.start();
-                    }
-                }
-            });
-
-            isPlaying = true;
-            clip.start();
-
         } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void loop() {
+    public void setLoop(boolean loop) {
         if (clip != null) {
-            if (!isPlaying) {
-                isPlaying = true;
-                clip.setMicrosecondPosition(0);
-                clip.start();
+            if (loop) {
+                clip.loop(Clip.LOOP_CONTINUOUSLY);
+            } else {
+                clip.loop(0);
             }
+        }
+    }
+
+    public void play() {
+        if (clip != null && !clip.isRunning()) {
+            clip.setFramePosition(0);
+            clip.start();
         }
     }
 
     public void stop() {
         if (clip != null) {
-            isPlaying = false;
             clip.stop();
             clip.close();
+            clip = null;
         }
-    }
-
-    private void setVolume(FloatControl gainControl, float volume) {
-        float dB = (float) (Math.log(volume) / Math.log(10.0) * 20.0);
-        gainControl.setValue(dB);
     }
 }

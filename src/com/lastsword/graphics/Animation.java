@@ -55,6 +55,12 @@ public class Animation {
         g.drawImage(currentFrame, x, y, null);
     }
 
+    public void drawEn(Graphics g, int x, int y) {
+        BufferedImage currentFrame = frames.get(currentFrameIndex);
+        g.drawImage(currentFrame, x - 40, y, null);
+
+    }
+
     public int getCurrentFrameIndex() {
         return currentFrameIndex;
     }
@@ -62,4 +68,12 @@ public class Animation {
     public List<BufferedImage> getFrames() {
         return frames;
     }
+
+    public Rectangle getBounds(int x, int y) {
+        BufferedImage currentFrame = frames.get(currentFrameIndex);
+        int width = currentFrame.getWidth();
+        int height = currentFrame.getHeight();
+        return new Rectangle(x, y, width, height);
+    }
+
 }
