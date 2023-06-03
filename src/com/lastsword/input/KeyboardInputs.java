@@ -8,6 +8,7 @@ import com.lastsword.utilities.Letter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import static com.lastsword.game.Game.EnemyMoveToThePoint;
 import static com.lastsword.game.GamePanel.RenderRandomBtns;
 import static com.lastsword.game.GamePanel.screen_timer;
 
@@ -55,9 +56,12 @@ public class KeyboardInputs implements KeyListener {
                     if (currentIndex == wordToMatch.length()) {
                         currentIndex = 0;
                         GamePanel.isCarouselActive=true;
+                        cnt++;
                     }
                 } else {
-                    Game.PlayerAttack();
+                    if(cnt!=0) {
+                            Game.EnemyAttack();
+                    }
                     currentIndex = 0;
                 }
                 return;
