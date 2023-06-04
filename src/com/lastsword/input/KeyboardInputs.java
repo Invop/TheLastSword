@@ -5,19 +5,22 @@ import com.lastsword.game.GamePanel;
 import com.lastsword.graphics.ButtonRenderer;
 import com.lastsword.utilities.Letter;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import static com.lastsword.game.Game.EnemyMoveToThePoint;
-import static com.lastsword.game.GamePanel.RenderRandomBtns;
-import static com.lastsword.game.GamePanel.screen_timer;
+import static com.lastsword.game.GamePanel.*;
 
 public class KeyboardInputs implements KeyListener {
 
     private static String wordToMatch;
     private static int currentIndex;
     private static ButtonRenderer buttonRenderer;
-    int cnt=0;
+    private static int cnt=0;
+    private static Timer timer;
 
     public KeyboardInputs(){
     }
@@ -32,7 +35,22 @@ public class KeyboardInputs implements KeyListener {
     public  static void setButtonRenderer(ButtonRenderer btnRenderer) {
         buttonRenderer = btnRenderer;
     }
-
+    public static void UpdateTimer(){
+        timer = new Timer(3000, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (currentIndex != wordToMatch.length()) {
+                    if (cnt != 0 && !isPlayerAttack) {
+                        Game.EnemyAttack();
+                    }
+                    currentIndex = 0;
+                }
+            }
+        });
+        if(timer!=null) {
+            timer.restart();
+        }
+        else{timer.start();}
+    }
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -55,18 +73,25 @@ public class KeyboardInputs implements KeyListener {
                     buttonRenderer.updateImage(currentIndex - 1);
                     if (currentIndex == wordToMatch.length()) {
                         currentIndex = 0;
-                        GamePanel.isCarouselActive=true;
+                        if(cnt==0) {
+                            GamePanel.isCarouselActive = true;
+                        }
+                        else{Game.PlayerAttack();}
                         cnt++;
+                        if(timer!=null) {
+                            timer.stop();
+                        }
                     }
                 } else {
-                    if(cnt!=0) {
-                            Game.PlayerAttack();
+                    if(cnt!=0 && !isPlayerAttack) {
+                        Game.EnemyAttack();
                     }
                     currentIndex = 0;
                 }
                 return;
             }
         }
+
     }
 
 
