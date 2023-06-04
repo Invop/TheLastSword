@@ -60,7 +60,7 @@ public class KeyboardInputs implements KeyListener {
                     }
                 } else {
                     if(cnt!=0) {
-                            Game.EnemyAttack();
+                            Game.PlayerAttack();
                     }
                     currentIndex = 0;
                 }

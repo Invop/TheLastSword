@@ -98,10 +98,6 @@ public class GamePanel extends JPanel {
             e.printStackTrace();
         }
     }
-
-    public static void addCollection(List<BufferedImage> images) {
-        enemyUltCollection.add(images);
-    }
     public boolean isCollision(Rectangle rect1, Rectangle rect2) {
         return rect1.intersects(rect2);
     }
@@ -136,12 +132,20 @@ public class GamePanel extends JPanel {
                 currentPA.draw(g, currentPlayerPoint, 280);
                 Rectangle PlayerRect = currentPA.getBounds(currentPlayerPoint, 280);
                 Rectangle EnemyRect = currentEA.getBounds(currentEnemyPoint, 280);
-                if(isCollision(EnemyRect,PlayerRect)){
+                if(currentPA.getCurrentFrameIndex() == attackFramesPlayer.size()-1){
+                    isPlayerIdle=true;
+                    isPlayerAttack=false;
+                    isEnemyHurt=false;
+                    isEnemyDead=true;
+                }
+                else{
+                    if(isCollision(EnemyRect,PlayerRect)){
                     isEnemyIdle=false;
                     isEnemyHurt=true;
-                }else{
-                    isEnemyHurt=false;
-                    isEnemyIdle=true;
+                    }else{
+                        isEnemyHurt=false;
+                        isEnemyIdle=true;
+                    }
                 }
             }
             else if (isPlayerDead) {
@@ -200,6 +204,10 @@ public class GamePanel extends JPanel {
                 currentEA = deadAnimationEnemy;
                 currentEA.update();
                 currentEA.draw(g, currentEnemyPoint, 280);
+                 if(currentPA.getCurrentFrameIndex() == deadFramesEnemy.size()-2){
+                     isEnemyDead=false;
+                     currentEA=null;
+                 }
             } else if (isEnemyHurt) {
                 currentEA = hurtAnimationEnemy;
                 currentEA.update();
@@ -476,30 +484,6 @@ public class GamePanel extends JPanel {
             attackFramesEnemy.addAll(frames2);
         }
     }
-
-    private static void AddEnemyUltFrames() {
-        GetFrames getFrames1;
-        getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/Summon_Juggernaut.png",
-                null);
-        addCollection(scaleImages(getFrames1.FramesToList(), 2.6));
-        getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/MagorixUltAttack1.png",
-                null);
-        addCollection(scaleImages(getFrames1.FramesToList(), 2.6));
-        getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/MagorixUltAttack2.png",
-                null);
-        addCollection(scaleImages(getFrames1.FramesToList(), 2.6));
-        getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/MagorixUltWalk.png",
-                null);
-        addCollection(scaleImages(getFrames1.FramesToList(), 2.6));
-        getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/MagorixUltHurt.png",
-                null);
-        addCollection(scaleImages(getFrames1.FramesToList(), 2.6));
-        getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/MagorixUltIdle.png",
-                null);
-        addCollection(scaleImages(getFrames1.FramesToList(), 2.6));
-
-    }
-
     private static void AddEnemyWalkFrames() {
         GetFrames getFrames1;
         List<BufferedImage> frames1 = null;
@@ -625,7 +609,6 @@ public class GamePanel extends JPanel {
         AddEnemyDeadFrames();
         AddEnemyIdleFrames();
         AddEnemyProjectileFrame();
-        if (Enemy.isBossFight()) AddEnemyUltFrames();
     }
 
     public void PlayerMove(int point){
@@ -685,7 +668,7 @@ public class GamePanel extends JPanel {
     }
 
     private void AddPlayerAnimations() {
-        attackAnimationPlayer = new Animation(attackFramesPlayer, defaultAnimationSpeed + 10, false);
+        attackAnimationPlayer = new Animation(attackFramesPlayer, defaultAnimationSpeed + 10, true);
         ultAnimationPlayer = new Animation(ultFramesPlayer, defaultAnimationSpeed, false);
         if (player.getPlayerId() == 2) arrowAnimationPlayer = new Animation(arrow);
         walkAnimationPlayer = new Animation(walkFramesPlayer, defaultAnimationSpeed, true);
@@ -695,27 +678,17 @@ public class GamePanel extends JPanel {
     }
 
     public static void AddEnemyAnimation() {
-        if (Enemy.isBossFight()) {
-            ultAnimationEnemy = new Animation(enemyUltCollection.get(0),defaultAnimationSpeed,false);
-            attack1AnimationEnemy = new Animation(enemyUltCollection.get(1), defaultAnimationSpeed, true);
-            attack2AnimationEnemy = new Animation(enemyUltCollection.get(2), defaultAnimationSpeed, false);
-            projectileAnimationEnemy = new Animation(projectile);
-            walkAnimationEnemy = new Animation(enemyUltCollection.get(3), defaultAnimationSpeed, true);
-            hurtAnimationEnemy = new Animation(enemyUltCollection.get(4), defaultAnimationSpeed - 49, true);
-            idleAnimationEnemy = new Animation(enemyUltCollection.get(5), defaultAnimationSpeed, true);
-        } else {
-            attack1AnimationEnemy = new Animation(attackFramesEnemy, defaultAnimationSpeed + 300, true);
+            attack1AnimationEnemy = new Animation(attackFramesEnemy, defaultAnimationSpeed, true);
             walkAnimationEnemy = new Animation(walkFramesEnemy, defaultAnimationSpeed, true);
             hurtAnimationEnemy = new Animation(hurtFramesEnemy, defaultAnimationSpeed - 50, true);
             deadAnimationEnemy = new Animation(deadFramesEnemy, defaultAnimationSpeed, false);
             idleAnimationEnemy = new Animation(idleFramesEnemy, defaultAnimationSpeed, true);
             if (Enemy.getEnemyId() == 1) projectileAnimationEnemy = new Animation(projectile);
-        }
     }
 
     private void CreateRandomEnemy() {
         randomEnemy = random.nextInt(0, 3);
-        Enemy.setEnemyId(2);
+        Enemy.setEnemyId(3);
         InitEnemyFrames();
         AddEnemyAnimation();
     }
