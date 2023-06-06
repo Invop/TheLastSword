@@ -275,11 +275,7 @@ public class GamePanel extends JPanel {
 
             switch (difficultyLevel) {
                 case 0 -> wordGenerator = new WordGenerator(3);
-                case 1 -> wordGenerator = new WordGenerator(4);
-                case 2 -> {
-                    wordGenerator = new WordGenerator(4);
-                    player.setPlayerHp(2);
-                }
+                case 1,2 -> wordGenerator = new WordGenerator(4);
             }
             letterValues = wordGenerator.getLetterValues();
             buttonRenderer = new ButtonRenderer(letterValues);
