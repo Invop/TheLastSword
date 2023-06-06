@@ -621,6 +621,7 @@ public class GamePanel extends JPanel {
                 } else {
                     resetFlagsPlayer();
                     isPlayerIdle=true;
+                    animation_timer.restart();
                 }
                 // Викликаємо метод перерисування
             }repaint();
@@ -636,6 +637,7 @@ public class GamePanel extends JPanel {
                     resetFlagsEnemy();
                     isEnemyIdle=true;
                     this.addKeyListener(keyboardInputs);
+                    animation_timer.restart();
                 }
                 // Викликаємо метод перерисування
             }repaint();
@@ -661,7 +663,7 @@ public class GamePanel extends JPanel {
                     shiftX = 0;
                     x1 = 0;
                     x2 = imageWidth;
-
+                    screen_timer.restart();
                 }
                 // Викликаємо метод перерисування
             }
