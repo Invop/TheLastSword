@@ -10,6 +10,8 @@ import com.lastsword.menu.CharaterSelectionMenuWindow;
 import javax.swing.*;
 import java.awt.*;
 
+import static com.lastsword.game.GamePanel.currentPlayerPoint;
+
 
 public class Game {
     private GameWindow gameWindow;
@@ -67,6 +69,11 @@ public class Game {
     public static void PlayerAttack() {
         resetFlagsPlayer();
         GamePanel.isPlayerAttack = true;
+
+    }
+    public static void EnemyAttack() {
+        resetFlagsEnemy();
+        GamePanel.isEnemyAttack1 = true;
 
     }
 
