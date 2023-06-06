@@ -6,6 +6,8 @@ import com.lastsword.entities.Player;
 import com.lastsword.graphics.Animation;
 import com.lastsword.graphics.ButtonRenderer;
 import com.lastsword.input.KeyboardInputs;
+import com.lastsword.menu.MainMenuPanel;
+import com.lastsword.menu.MainMenuWindow;
 import com.lastsword.utilities.GetFrames;
 import com.lastsword.utilities.WordGenerator;
 
@@ -19,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static com.lastsword.game.Game.resetFlagsEnemy;
+import static com.lastsword.game.Game.resetFlagsPlayer;
 import static com.lastsword.utilities.GetFrames.scaleImage;
 import static com.lastsword.utilities.GetFrames.scaleImages;
 
@@ -35,13 +39,12 @@ public class GamePanel extends JPanel {
             ultAnimationEnemy, projectileAnimationEnemy,
             walkAnimationEnemy, hurtAnimationEnemy, deadAnimationEnemy,
             idleAnimationEnemy,currentEA;
-    private Timer animation_timer, arrow_timer;
+    private Timer animation_timer;
     private static WordGenerator wordGenerator;
     private static ButtonRenderer buttonRenderer;
     private static KeyboardInputs keyboardInputs;
     private List<BufferedImage> attackFramesPlayer, ultFramesPlayer, walkFramesPlayer, hurtFramesPlayer, deadFramesPlayer, idleFramesPlayer;
     private static List<BufferedImage> attackFramesEnemy, walkFramesEnemy, hurtFramesEnemy, deadFramesEnemy, idleFramesEnemy;
-    private static List<List<BufferedImage>> enemyUltCollection;
     private BufferedImage arrow;
     private static BufferedImage projectile;
     private static final int defaultAnimationSpeed = 100;
@@ -73,11 +76,16 @@ public class GamePanel extends JPanel {
     public static int currentEnemyPoint=1280;
     private Game game;
     private static int wordCnt=0;
+    private boolean newWord;
+    private static int difficultyLevel;
+    private int previousHp = 4;
+    private int killedCnt=0;
+    private boolean shouldDraw = true;
+
     public GamePanel() {
         game = new Game();
         keyboardInputs = new KeyboardInputs();
         player = Game.getSelectedPlayer();
-        System.out.println(player.getInfo());
         setBackground(Color.PINK);
         setSize(1280, 720);
         setFocusable(true);
@@ -90,7 +98,10 @@ public class GamePanel extends JPanel {
         ScreenMove();
     }
 
-
+    private Image loadImage(String imagePath) {
+        ImageIcon icon = new ImageIcon(imagePath);
+        return icon.getImage();
+    }
     public void AddBackground() {
         try {
             backgroundImage = ImageIO.read(new File("src/res/images/backgrounds/Battleground2/Battleground2.png"));
@@ -98,17 +109,12 @@ public class GamePanel extends JPanel {
             e.printStackTrace();
         }
     }
-
-    public static void addCollection(List<BufferedImage> images) {
-        enemyUltCollection.add(images);
-    }
     public boolean isCollision(Rectangle rect1, Rectangle rect2) {
         return rect1.intersects(rect2);
     }
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         //bg move
         if (backgroundImage != null) {
             g.drawImage(backgroundImage, x1 - shiftX, 0, imageWidth, imageHeight, null);
@@ -123,7 +129,7 @@ public class GamePanel extends JPanel {
             if (isPlayerWalk) {
                 currentPA = walkAnimationPlayer;
                 currentPA.update();
-                currentPA.draw(g, currentPlayerPoint + playerShiftX, 280);
+                currentPA.draw(g, currentPlayerPoint , 280);
             }
             else if (isPlayerIdle) {
                 currentPA = idleAnimationPlayer;
@@ -136,18 +142,41 @@ public class GamePanel extends JPanel {
                 currentPA.draw(g, currentPlayerPoint, 280);
                 Rectangle PlayerRect = currentPA.getBounds(currentPlayerPoint, 280);
                 Rectangle EnemyRect = currentEA.getBounds(currentEnemyPoint, 280);
-                if(isCollision(EnemyRect,PlayerRect)){
+                if(currentPA.getCurrentFrameIndex() == attackFramesPlayer.size()-1){
+                    isPlayerIdle=true;
+                    isPlayerAttack=false;
+                    isEnemyHurt=false;
+                    isEnemyDead=true;
+                    killedCnt++;
+                }
+                else{
+                    if(isCollision(EnemyRect,PlayerRect)){
                     isEnemyIdle=false;
                     isEnemyHurt=true;
-                }else{
-                    isEnemyHurt=false;
-                    isEnemyIdle=true;
+                    }else{
+                        isEnemyHurt=false;
+                        isEnemyIdle=true;
+                    }
                 }
             }
             else if (isPlayerDead) {
                 currentPA = deadAnimationPlayer;
                 currentPA.update();
                 currentPA.draw(g, currentPlayerPoint, 280);
+                if(currentPA.getCurrentFrameIndex()== deadFramesPlayer.size()-2){
+                    resetFlagsPlayer();
+                    resetFlagsEnemy();
+                    JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+                    frame.requestFocus();
+                    frame.dispose();
+
+                    String message = "Ви винищили " + killedCnt + " ворогів";
+                    JOptionPane.showMessageDialog(this, message);
+
+
+                    MainMenuPanel mainMenuPanel = new MainMenuPanel();
+                    MainMenuWindow menuWindow = new MainMenuWindow(mainMenuPanel);
+                }
             }
             else if (isPlayerHurt) {
                 currentPA = hurtAnimationPlayer;
@@ -170,36 +199,43 @@ public class GamePanel extends JPanel {
              currentEA = attack1AnimationEnemy;
              Rectangle PlayerRect = currentPA.getBounds(enemyPoint, 280);
              Rectangle EnemyRect = currentEA.getBounds(enemyPoint, 280);
-             Rectangle EnemyAttack = currentEA.getBounds((int) (enemyPoint-EnemyRect.getWidth()+10), 280);
+             Rectangle EnemyAttack = currentEA.getBounds((int) (enemyPoint-EnemyRect.getWidth()+20), 280);
 
              currentEA.update();
-             currentEA.draw(g, (int)(enemyPoint-EnemyRect.getWidth()+10), 280);
-             if(currentEA.getCurrentFrameIndex() == attackFramesEnemy.size()-1){
+             currentEA.draw(g, (int)(enemyPoint-EnemyRect.getWidth()+20), 280);
+             if(currentEA.getCurrentFrameIndex() == attackFramesEnemy.size()-2){
                  isEnemyIdle=true;
                  isEnemyAttack1=false;
-                 isPlayerHurt=false;
-                 isPlayerIdle=true;
-             }else{
+                 isPlayerAttack=true;
+                 player.setPlayerHp(player.getPlayerHp()-1);
+                 if(player.getPlayerHp()==0){
+                     resetFlagsPlayer();
+                     isPlayerDead=true;
+                 }
+             }
+             else{
                  if(isCollision(PlayerRect,EnemyAttack)){
-                     isPlayerIdle=false;
-                     isPlayerHurt=true;
                  }else{
                      isPlayerHurt=false;
                      isPlayerIdle=true;
                  }}
             } else if (isEnemyIdle) {
+                 if(newWord){RenderRandomBtns();newWord=false;}
                 currentEA = idleAnimationEnemy;
                 currentEA.update();
                 currentEA.draw(g, currentEnemyPoint, 280);
             }
-            else if (isEnemyAttack2) {
-                currentEA = attack2AnimationEnemy;
-                currentEA.update();
-                currentEA.draw(g, currentEnemyPoint, 280);
-            } else if (isEnemyDead) {
+             else if (isEnemyDead) {
                 currentEA = deadAnimationEnemy;
                 currentEA.update();
                 currentEA.draw(g, currentEnemyPoint, 280);
+                 if(currentPA.getCurrentFrameIndex() == deadFramesEnemy.size()-2){
+                     isEnemyDead=false;
+                     resetFlagsPlayer();
+                     resetFlagsEnemy();
+                     GamePanel.isCarouselActive=true;
+                     currentEA=null;
+                 }
             } else if (isEnemyHurt) {
                 currentEA = hurtAnimationEnemy;
                 currentEA.update();
@@ -211,6 +247,18 @@ public class GamePanel extends JPanel {
             }
         }
         buttonRenderer.draw(g, 500, 600);
+
+        int hp = player.getPlayerHp();
+        int imageWidth = 32;
+        int imageHeight = 32;
+        int spacing = 5;
+
+        for (int i = 0; i < hp; i++) {
+            int x = i * (imageWidth + spacing);
+            int y = 0;
+            Image hpBarImage = loadImage("src/res/images/hpbar/hpBar.png");
+            g.drawImage(hpBarImage, x, y, imageWidth, imageHeight, null);
+        }
     }
 
 
@@ -224,13 +272,21 @@ public class GamePanel extends JPanel {
             wordCnt++;
         }
         else {
-            wordGenerator = new WordGenerator(3);
+
+            switch (difficultyLevel) {
+                case 0 -> wordGenerator = new WordGenerator(3);
+                case 1 -> wordGenerator = new WordGenerator(4);
+                case 2 -> {
+                    wordGenerator = new WordGenerator(4);
+                    player.setPlayerHp(2);
+                }
+            }
             letterValues = wordGenerator.getLetterValues();
             buttonRenderer = new ButtonRenderer(letterValues);
             KeyboardInputs.setCurrentIndex();
             KeyboardInputs.setButtonRenderer(buttonRenderer);
             KeyboardInputs.setWordToMatch(wordGenerator.getWord());
-            System.out.println(wordGenerator.getWord());
+            KeyboardInputs.UpdateTimer(difficultyLevel);
         }
     }
 
@@ -476,30 +532,6 @@ public class GamePanel extends JPanel {
             attackFramesEnemy.addAll(frames2);
         }
     }
-
-    private static void AddEnemyUltFrames() {
-        GetFrames getFrames1;
-        getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/Summon_Juggernaut.png",
-                null);
-        addCollection(scaleImages(getFrames1.FramesToList(), 2.6));
-        getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/MagorixUltAttack1.png",
-                null);
-        addCollection(scaleImages(getFrames1.FramesToList(), 2.6));
-        getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/MagorixUltAttack2.png",
-                null);
-        addCollection(scaleImages(getFrames1.FramesToList(), 2.6));
-        getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/MagorixUltWalk.png",
-                null);
-        addCollection(scaleImages(getFrames1.FramesToList(), 2.6));
-        getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/MagorixUltHurt.png",
-                null);
-        addCollection(scaleImages(getFrames1.FramesToList(), 2.6));
-        getFrames1 = new GetFrames("src/res/images/sprites/enemy/bosses/magorix/MagorixUltIdle.png",
-                null);
-        addCollection(scaleImages(getFrames1.FramesToList(), 2.6));
-
-    }
-
     private static void AddEnemyWalkFrames() {
         GetFrames getFrames1;
         List<BufferedImage> frames1 = null;
@@ -625,17 +657,17 @@ public class GamePanel extends JPanel {
         AddEnemyDeadFrames();
         AddEnemyIdleFrames();
         AddEnemyProjectileFrame();
-        if (Enemy.isBossFight()) AddEnemyUltFrames();
     }
 
     public void PlayerMove(int point){
         animation_timer = new Timer(20, e -> {
             if (isPlayerWalk) {
                 if (currentPlayerPoint < point) {
-                    currentPlayerPoint += 6;
+                    currentPlayerPoint += 7;
                 } else {
-                    isPlayerWalk = false;
+                    resetFlagsPlayer();
                     isPlayerIdle=true;
+                    animation_timer.restart();
                 }
                 // Викликаємо метод перерисування
             }repaint();
@@ -648,10 +680,10 @@ public class GamePanel extends JPanel {
                 if (currentEnemyPoint > point) {
                     currentEnemyPoint -= 5;
                 } else {
-                    System.out.println(point);
-                    System.out.println(currentEnemyPoint);
-                    isEnemyWalk = false;
+                    resetFlagsEnemy();
                     isEnemyIdle=true;
+                    this.addKeyListener(keyboardInputs);
+                    animation_timer.restart();
                 }
                 // Викликаємо метод перерисування
             }repaint();
@@ -659,22 +691,25 @@ public class GamePanel extends JPanel {
         animation_timer.start();
     }
     private void ScreenMove(){
-        screen_timer = new Timer(20, e -> {
+        screen_timer = new Timer(40, e -> {
             if (isCarouselActive) {
                 if (shiftX < imageWidth) {
                     shiftX += 15; // Оновлюємо зміщення по осі X
                     this.removeKeyListener(keyboardInputs);
                     playAudio=true;
                 } else {
+                    System.gc();
                     isCarouselActive = false;
-                    RenderRandomBtns();
-                    this.addKeyListener(keyboardInputs);
+                    CreateRandomEnemy();
+
+                    currentEnemyPoint=1280;
                     Game.PlayerMoveToThePoint(670);
                     Game.EnemyMoveToThePoint(800);
+                    newWord = true;
                     shiftX = 0;
                     x1 = 0;
                     x2 = imageWidth;
-
+                    screen_timer.restart();
                 }
                 // Викликаємо метод перерисування
             }
@@ -685,7 +720,7 @@ public class GamePanel extends JPanel {
     }
 
     private void AddPlayerAnimations() {
-        attackAnimationPlayer = new Animation(attackFramesPlayer, defaultAnimationSpeed + 10, false);
+        attackAnimationPlayer = new Animation(attackFramesPlayer, defaultAnimationSpeed + 10, true);
         ultAnimationPlayer = new Animation(ultFramesPlayer, defaultAnimationSpeed, false);
         if (player.getPlayerId() == 2) arrowAnimationPlayer = new Animation(arrow);
         walkAnimationPlayer = new Animation(walkFramesPlayer, defaultAnimationSpeed, true);
@@ -695,30 +730,23 @@ public class GamePanel extends JPanel {
     }
 
     public static void AddEnemyAnimation() {
-        if (Enemy.isBossFight()) {
-            ultAnimationEnemy = new Animation(enemyUltCollection.get(0),defaultAnimationSpeed,false);
-            attack1AnimationEnemy = new Animation(enemyUltCollection.get(1), defaultAnimationSpeed, true);
-            attack2AnimationEnemy = new Animation(enemyUltCollection.get(2), defaultAnimationSpeed, false);
-            projectileAnimationEnemy = new Animation(projectile);
-            walkAnimationEnemy = new Animation(enemyUltCollection.get(3), defaultAnimationSpeed, true);
-            hurtAnimationEnemy = new Animation(enemyUltCollection.get(4), defaultAnimationSpeed - 49, true);
-            idleAnimationEnemy = new Animation(enemyUltCollection.get(5), defaultAnimationSpeed, true);
-        } else {
-            attack1AnimationEnemy = new Animation(attackFramesEnemy, defaultAnimationSpeed + 300, true);
+            attack1AnimationEnemy = new Animation(attackFramesEnemy, defaultAnimationSpeed+200, true);
             walkAnimationEnemy = new Animation(walkFramesEnemy, defaultAnimationSpeed, true);
             hurtAnimationEnemy = new Animation(hurtFramesEnemy, defaultAnimationSpeed - 50, true);
             deadAnimationEnemy = new Animation(deadFramesEnemy, defaultAnimationSpeed, false);
             idleAnimationEnemy = new Animation(idleFramesEnemy, defaultAnimationSpeed, true);
             if (Enemy.getEnemyId() == 1) projectileAnimationEnemy = new Animation(projectile);
-        }
     }
 
     private void CreateRandomEnemy() {
-        randomEnemy = random.nextInt(0, 3);
-        Enemy.setEnemyId(2);
+        randomEnemy = random.nextInt(2) + 2;
+        Enemy.setEnemyId(randomEnemy);
         InitEnemyFrames();
         AddEnemyAnimation();
     }
 
+    public void setDifficultyLevel(int difficultyLevel) {
+        this.difficultyLevel = difficultyLevel;
+    }
 }
 

@@ -1,15 +1,16 @@
 package com.lastsword.menu;
 
-import com.lastsword.Main;
 import com.lastsword.entities.Player;
 import com.lastsword.game.Game;
-import com.lastsword.game.GamePanel;
 import com.lastsword.graphics.Animation;
 import com.lastsword.utilities.GetFrames;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import static com.lastsword.utilities.GetFrames.scaleImages;
@@ -18,40 +19,51 @@ public class CharacterSelectionMenuPanel extends JPanel {
     private List<BufferedImage> idleAnimationHero1;
     private List<BufferedImage> idleAnimationHero2;
     private List<BufferedImage> idleAnimationHero3;
+    private Image backgroundImage;
     private static final int animationSpeed = 120;
     private static final int animation_delay = 100;
     private Animation idleAnimation;
     private int currentHeroIndex = 1;
-    private JTextArea heroInfoTextArea;
     private Timer idleAnimation_timer;
-    private JButton previousButton;
+    private JButton backButton;
     private JButton nextButton;
     private JButton selectButton;
+    private static int difficultyLevel;
 
     public CharacterSelectionMenuPanel() {
+        setSize(1280,720);
         setLayout(new BorderLayout());
         CreateTimer();
+        AddBackground();
         AddIdleFrames();
-
-        add(createTextPanel(), BorderLayout.EAST);
         UpdateHeroInfo(1);
+        createBtns();
     }
+    private void createBtns() {
+        nextButton = new JButton();
+        selectButton = new JButton();
+        backButton = new JButton();
+        setLayout(new FlowLayout());
+        // Set button icons
+        nextButton.setIcon(new ImageIcon("src/res/images/buttons/next/72px/next01.png"));
+        selectButton.setIcon(new ImageIcon("src/res/images/buttons/play/72px/play01.png"));
+        backButton.setIcon(new ImageIcon("src/res/images/buttons/back/72px/back01.png"));
 
-    private JPanel createTextPanel() {
-        JPanel selectionPanel = new JPanel();
-        selectionPanel.setLayout(new BorderLayout());
 
-        previousButton = new JButton("Previous");
-        nextButton = new JButton("Next");
-        selectButton = new JButton("Select");
+        nextButton.setBorderPainted(false);
+        nextButton.setContentAreaFilled(false);
+        selectButton.setBorderPainted(false);
+        selectButton.setContentAreaFilled(false);
+        backButton.setBorderPainted(false);
+        backButton.setContentAreaFilled(false);
 
-        previousButton.addActionListener(e -> {
-            if (currentHeroIndex > 1) {
-                currentHeroIndex--;
-            } else {
-                currentHeroIndex = 3;
-            }
-            UpdateHeroInfo(currentHeroIndex);
+
+        backButton.addActionListener(e -> {
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            frame.requestFocus();
+            frame.dispose();
+            MainMenuPanel mainMenuPanel = new MainMenuPanel();
+            MainMenuWindow menuWindow = new MainMenuWindow(mainMenuPanel);
         });
 
         nextButton.addActionListener(e -> {
@@ -66,85 +78,52 @@ public class CharacterSelectionMenuPanel extends JPanel {
         selectButton.addActionListener(e -> {
             Game game = new Game();
             game.setSelectedPlayer(new Player(currentHeroIndex));
-            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(Main.getPanel());
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(MainMenuPanel.getPanel());
             frame.requestFocus();
+            game.StartGame();
             frame.dispose();
 
-            game.StartGame();
         });
+        add(backButton);
+        add(nextButton);
+        add(selectButton);
 
-        heroInfoTextArea = new JTextArea();
-        heroInfoTextArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-        heroInfoTextArea.setEditable(false);
-        heroInfoTextArea.setText(getCurrentHeroInfo());
-
-        JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new GridLayout(3, 1));
-        buttonsPanel.add(previousButton);
-        buttonsPanel.add(nextButton);
-        buttonsPanel.add(selectButton);
-
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        splitPane.setResizeWeight(0.75);
-        splitPane.setEnabled(false);
-        splitPane.setTopComponent(new JScrollPane(heroInfoTextArea));
-        splitPane.setBottomComponent(buttonsPanel);
-
-        selectionPanel.add(splitPane, BorderLayout.CENTER);
-
-        // Set preferred size with width 400
-        selectionPanel.setPreferredSize(new Dimension(400, selectionPanel.getPreferredSize().height));
-
-        return selectionPanel;
     }
 
     private void UpdateHeroInfo(int heroId) {
-        String heroInfo;
 
         switch (heroId) {
             case 1 -> {
-                heroInfo = getCurrentHeroInfo();
                 idleAnimation = new Animation(idleAnimationHero1, animationSpeed, true);
             }
             case 2 -> {
-                heroInfo = getCurrentHeroInfo();
                 idleAnimation = new Animation(idleAnimationHero2, animationSpeed, true);
             }
             case 3 -> {
-                heroInfo = getCurrentHeroInfo();
                 idleAnimation = new Animation(idleAnimationHero3, animationSpeed, true);
             }
             default -> {
-                heroInfo = "";
                 idleAnimation = null;
             }
         }
-
-        heroInfoTextArea.setText(heroInfo);
         repaint();
     }
 
     private void AddIdleFrames() {
         GetFrames getFrames1 = new GetFrames("src/res/images/sprites/player/fire_vizard/Idle.png", null);
-        idleAnimationHero1 = scaleImages(getFrames1.FramesToList(), 2);
+        idleAnimationHero1 = scaleImages(getFrames1.FramesToList(), 2.6);
 
         GetFrames getFrames2 = new GetFrames("src/res/images/sprites/player/samurai_archer/Idle.png", null);
-        idleAnimationHero2 = scaleImages(getFrames2.FramesToList(), 2);
+        idleAnimationHero2 = scaleImages(getFrames2.FramesToList(), 2.6);
 
         GetFrames getFrames3 = new GetFrames("src/res/images/sprites/player/samurai_commander/Idle.png", null);
-        idleAnimationHero3 = scaleImages(getFrames3.FramesToList(), 2);
+        idleAnimationHero3 = scaleImages(getFrames3.FramesToList(), 2.6);
     }
-
-    private String getCurrentHeroInfo() {
-        switch (currentHeroIndex) {
-            case 1:
-                return new Player(1).getInfo();
-            case 2:
-                return new Player(2).getInfo();
-            case 3:
-                return new Player(3).getInfo();
-            default:
-                return "";
+    private void AddBackground() {
+        try {
+            backgroundImage = ImageIO.read(new File("src/res/images/backgrounds/menubackground/background.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -158,10 +137,20 @@ public class CharacterSelectionMenuPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        int x = 350;
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
+        int x = 570;
         int y = 100;
         idleAnimation.update();
         idleAnimation.draw(g, x, y);
+    }
+
+    public void setDifficultyLevel(int difficult) {
+        difficultyLevel = difficult;
+    }
+
+    public static int getDifficultyLevel() {
+        return difficultyLevel;
     }
 }
