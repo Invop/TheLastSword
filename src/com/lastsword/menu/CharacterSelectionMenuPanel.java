@@ -4,6 +4,7 @@ import com.lastsword.Main;
 import com.lastsword.entities.Player;
 import com.lastsword.game.Game;
 import com.lastsword.game.GamePanel;
+import com.lastsword.game.GameWindow;
 import com.lastsword.graphics.Animation;
 import com.lastsword.utilities.GetFrames;
 
@@ -32,11 +33,9 @@ public class CharacterSelectionMenuPanel extends JPanel {
         setLayout(new BorderLayout());
         CreateTimer();
         AddIdleFrames();
-
         add(createTextPanel(), BorderLayout.EAST);
         UpdateHeroInfo(1);
     }
-
     private JPanel createTextPanel() {
         JPanel selectionPanel = new JPanel();
         selectionPanel.setLayout(new BorderLayout());
@@ -66,7 +65,7 @@ public class CharacterSelectionMenuPanel extends JPanel {
         selectButton.addActionListener(e -> {
             Game game = new Game();
             game.setSelectedPlayer(new Player(currentHeroIndex));
-            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(Main.getPanel());
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(MainMenuPanel.getPanel());
             frame.requestFocus();
             frame.dispose();
 
