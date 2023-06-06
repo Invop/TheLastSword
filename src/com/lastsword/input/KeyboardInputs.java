@@ -35,17 +35,35 @@ public class KeyboardInputs implements KeyListener {
     public  static void setButtonRenderer(ButtonRenderer btnRenderer) {
         buttonRenderer = btnRenderer;
     }
-    public static void UpdateTimer(){
-        timer = new Timer(3000, new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (currentIndex != wordToMatch.length()) {
-                    if (cnt != 0 && !isPlayerAttack) {
-                        Game.EnemyAttack();
+    public static void UpdateTimer(int difficultyLevel){
+        switch (difficultyLevel){
+            case 2:{
+                timer = new Timer(2200, new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    if (currentIndex != wordToMatch.length()) {
+                        if (cnt != 0 && !isPlayerAttack) {
+                            Game.EnemyAttack();
+                        }
+                        currentIndex = 0;
                     }
-                    currentIndex = 0;
                 }
+                });
+            break;
             }
-        });
+            default:{
+                timer = new Timer(3000, new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        if (currentIndex != wordToMatch.length()) {
+                            if (cnt != 0 && !isPlayerAttack) {
+                                Game.EnemyAttack();
+                            }
+                            currentIndex = 0;
+                        }
+                    }
+                });
+                break;
+            }
+        }
         if(timer!=null) {
             timer.restart();
         }

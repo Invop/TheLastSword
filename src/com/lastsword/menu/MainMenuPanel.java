@@ -15,6 +15,7 @@ public class MainMenuPanel extends JPanel {
     private static CharacterSelectionMenuPanel selectionMenuPanel;
     private static SettingsPanel settingsPanel;
     private Image backgroundImage;
+    private int difficultyLevel;
 
     public MainMenuPanel(){
         setLayout(new BorderLayout());
@@ -46,6 +47,8 @@ public class MainMenuPanel extends JPanel {
                 frame.requestFocus();
                 frame.dispose();
                 selectionMenuPanel = new CharacterSelectionMenuPanel();
+                selectionMenuPanel.setDifficultyLevel(difficultyLevel);
+                System.out.println(difficultyLevel);
                 CharaterSelectionMenuWindow selectionMenuWindow = new CharaterSelectionMenuWindow(selectionMenuPanel);
             });
             // Button 2
@@ -89,5 +92,13 @@ public class MainMenuPanel extends JPanel {
         if (backgroundImage != null) {
             g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
         }
+    }
+
+    public void setDifficultyLevel(int difficultyLevel) {
+        this.difficultyLevel = difficultyLevel;
+    }
+
+    public int getDifficultyLevel() {
+        return difficultyLevel;
     }
 }

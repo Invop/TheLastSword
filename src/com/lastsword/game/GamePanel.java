@@ -6,6 +6,8 @@ import com.lastsword.entities.Player;
 import com.lastsword.graphics.Animation;
 import com.lastsword.graphics.ButtonRenderer;
 import com.lastsword.input.KeyboardInputs;
+import com.lastsword.menu.MainMenuPanel;
+import com.lastsword.menu.MainMenuWindow;
 import com.lastsword.utilities.GetFrames;
 import com.lastsword.utilities.WordGenerator;
 
@@ -37,13 +39,12 @@ public class GamePanel extends JPanel {
             ultAnimationEnemy, projectileAnimationEnemy,
             walkAnimationEnemy, hurtAnimationEnemy, deadAnimationEnemy,
             idleAnimationEnemy,currentEA;
-    private Timer animation_timer, arrow_timer;
+    private Timer animation_timer;
     private static WordGenerator wordGenerator;
     private static ButtonRenderer buttonRenderer;
     private static KeyboardInputs keyboardInputs;
     private List<BufferedImage> attackFramesPlayer, ultFramesPlayer, walkFramesPlayer, hurtFramesPlayer, deadFramesPlayer, idleFramesPlayer;
     private static List<BufferedImage> attackFramesEnemy, walkFramesEnemy, hurtFramesEnemy, deadFramesEnemy, idleFramesEnemy;
-    private static List<List<BufferedImage>> enemyUltCollection;
     private BufferedImage arrow;
     private static BufferedImage projectile;
     private static final int defaultAnimationSpeed = 100;
@@ -76,12 +77,15 @@ public class GamePanel extends JPanel {
     private Game game;
     private static int wordCnt=0;
     private boolean newWord;
+    private static int difficultyLevel;
+    private int previousHp = 4;
+    private int killedCnt=0;
+    private boolean shouldDraw = true;
 
     public GamePanel() {
         game = new Game();
         keyboardInputs = new KeyboardInputs();
         player = Game.getSelectedPlayer();
-        System.out.println(player.getInfo());
         setBackground(Color.PINK);
         setSize(1280, 720);
         setFocusable(true);
@@ -94,7 +98,10 @@ public class GamePanel extends JPanel {
         ScreenMove();
     }
 
-
+    private Image loadImage(String imagePath) {
+        ImageIcon icon = new ImageIcon(imagePath);
+        return icon.getImage();
+    }
     public void AddBackground() {
         try {
             backgroundImage = ImageIO.read(new File("src/res/images/backgrounds/Battleground2/Battleground2.png"));
@@ -108,7 +115,6 @@ public class GamePanel extends JPanel {
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         //bg move
         if (backgroundImage != null) {
             g.drawImage(backgroundImage, x1 - shiftX, 0, imageWidth, imageHeight, null);
@@ -141,6 +147,7 @@ public class GamePanel extends JPanel {
                     isPlayerAttack=false;
                     isEnemyHurt=false;
                     isEnemyDead=true;
+                    killedCnt++;
                 }
                 else{
                     if(isCollision(EnemyRect,PlayerRect)){
@@ -156,6 +163,20 @@ public class GamePanel extends JPanel {
                 currentPA = deadAnimationPlayer;
                 currentPA.update();
                 currentPA.draw(g, currentPlayerPoint, 280);
+                if(currentPA.getCurrentFrameIndex()== deadFramesPlayer.size()-2){
+                    resetFlagsPlayer();
+                    resetFlagsEnemy();
+                    JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+                    frame.requestFocus();
+                    frame.dispose();
+
+                    String message = "Ви винищили " + killedCnt + " ворогів";
+                    JOptionPane.showMessageDialog(this, message);
+
+
+                    MainMenuPanel mainMenuPanel = new MainMenuPanel();
+                    MainMenuWindow menuWindow = new MainMenuWindow(mainMenuPanel);
+                }
             }
             else if (isPlayerHurt) {
                 currentPA = hurtAnimationPlayer;
@@ -186,6 +207,11 @@ public class GamePanel extends JPanel {
                  isEnemyIdle=true;
                  isEnemyAttack1=false;
                  isPlayerAttack=true;
+                 player.setPlayerHp(player.getPlayerHp()-1);
+                 if(player.getPlayerHp()==0){
+                     resetFlagsPlayer();
+                     isPlayerDead=true;
+                 }
              }
              else{
                  if(isCollision(PlayerRect,EnemyAttack)){
@@ -221,6 +247,18 @@ public class GamePanel extends JPanel {
             }
         }
         buttonRenderer.draw(g, 500, 600);
+
+        int hp = player.getPlayerHp();
+        int imageWidth = 32;
+        int imageHeight = 32;
+        int spacing = 5;
+
+        for (int i = 0; i < hp; i++) {
+            int x = i * (imageWidth + spacing);
+            int y = 0;
+            Image hpBarImage = loadImage("src/res/images/hpbar/hpBar.png");
+            g.drawImage(hpBarImage, x, y, imageWidth, imageHeight, null);
+        }
     }
 
 
@@ -234,13 +272,21 @@ public class GamePanel extends JPanel {
             wordCnt++;
         }
         else {
-            wordGenerator = new WordGenerator(3);
+
+            switch (difficultyLevel) {
+                case 0 -> wordGenerator = new WordGenerator(3);
+                case 1 -> wordGenerator = new WordGenerator(4);
+                case 2 -> {
+                    wordGenerator = new WordGenerator(4);
+                    player.setPlayerHp(2);
+                }
+            }
             letterValues = wordGenerator.getLetterValues();
             buttonRenderer = new ButtonRenderer(letterValues);
             KeyboardInputs.setCurrentIndex();
             KeyboardInputs.setButtonRenderer(buttonRenderer);
             KeyboardInputs.setWordToMatch(wordGenerator.getWord());
-            KeyboardInputs.UpdateTimer();
+            KeyboardInputs.UpdateTimer(difficultyLevel);
         }
     }
 
@@ -699,5 +745,8 @@ public class GamePanel extends JPanel {
         AddEnemyAnimation();
     }
 
+    public void setDifficultyLevel(int difficultyLevel) {
+        this.difficultyLevel = difficultyLevel;
+    }
 }
 

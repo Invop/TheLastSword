@@ -1,16 +1,8 @@
 package com.lastsword.game;
 
 import com.lastsword.audio.AudioPlayer;
-import com.lastsword.entities.Enemy;
 import com.lastsword.entities.Player;
-import com.lastsword.graphics.HPBar;
 import com.lastsword.menu.CharacterSelectionMenuPanel;
-import com.lastsword.menu.CharaterSelectionMenuWindow;
-
-import javax.swing.*;
-import java.awt.*;
-
-import static com.lastsword.game.GamePanel.currentPlayerPoint;
 
 
 public class Game {
@@ -20,7 +12,6 @@ public class Game {
     private int victoryBattleCounter;
     private int playerScore;
     private static Player selectedPlayer;
-    private HPBar playerHpBar , enemyHpBar;
     private int KilledCounter =0;
 
     public Game() {
@@ -53,8 +44,8 @@ public class Game {
         resetFlagsPlayer();
         resetFlagsEnemy();
         gamePanel = new GamePanel();
+        gamePanel.setDifficultyLevel(CharacterSelectionMenuPanel.getDifficultyLevel());
         gameWindow = new GameWindow(gamePanel);
-        gamePanel.requestFocus();
     }
     public static void PlayerMoveToThePoint(int point){
         resetFlagsPlayer();
