@@ -1,7 +1,5 @@
 package com.lastsword.menu;
 
-import com.lastsword.Main;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -43,7 +41,7 @@ public class SettingsPanel extends JPanel {
         slider.setLabelTable(slider.createStandardLabels(1));
         slider.setLabelTable(slider.createStandardLabels(2));
         slider.setLabelTable(slider.createStandardLabels(3));
-
+        slider.setValue(0);
         slider.setLabelTable(createSliderLabels());
         slider.addChangeListener(new ChangeListener() {
             @Override
@@ -65,6 +63,7 @@ public class SettingsPanel extends JPanel {
         labelTable.put(2, new JLabel("Складний"));
         return labelTable;
     }
+
     private void addButton() {
         try {
             Image BackBtnImage = ImageIO.read(new File("src/res/images/buttons/back/72px/back01.png"));

@@ -2,6 +2,7 @@ package com.lastsword.game;
 
 import com.lastsword.audio.AudioPlayer;
 import com.lastsword.entities.Player;
+import com.lastsword.input.KeyboardInputs;
 import com.lastsword.menu.CharacterSelectionMenuPanel;
 
 
@@ -12,13 +13,8 @@ public class Game {
     private int victoryBattleCounter;
     private int playerScore;
     private static Player selectedPlayer;
-    private int KilledCounter =0;
+    private final int KilledCounter = 0;
 
-    public Game() {
-//
-//        audioPlayer = new AudioPlayer("src/res/music/MainTheme.wav");
-//        audioPlayer.loop();
-    }
     public static void resetFlagsPlayer() {
         GamePanel.isPlayerAttack = false;
         GamePanel.isPlayerWalk = false;
@@ -29,7 +25,8 @@ public class Game {
         GamePanel.isPlayerRange = false;
         GamePanel.isEnemyRange = false;
     }
-    public static void resetFlagsEnemy(){
+
+    public static void resetFlagsEnemy() {
         GamePanel.isEnemyAttack1 = false;
         GamePanel.isEnemyAttack2 = false;
         GamePanel.isEnemyWalk = false;
@@ -41,27 +38,33 @@ public class Game {
     }
 
     public void StartGame() {
-        resetFlagsPlayer();
-        resetFlagsEnemy();
+        KeyboardInputs.setCnt();
+        if (gamePanel != null) {
+            System.out.println(1111);
+        }
         gamePanel = new GamePanel();
         gamePanel.setDifficultyLevel(CharacterSelectionMenuPanel.getDifficultyLevel());
         gameWindow = new GameWindow(gamePanel);
     }
-    public static void PlayerMoveToThePoint(int point){
+
+    public static void PlayerMoveToThePoint(int point) {
         resetFlagsPlayer();
-        GamePanel.isPlayerWalk=true;
+        GamePanel.isPlayerWalk = true;
         gamePanel.PlayerMove(point);
     }
-    public static void EnemyMoveToThePoint(int point){
+
+    public static void EnemyMoveToThePoint(int point) {
         resetFlagsEnemy();
-        GamePanel.isEnemyWalk=true;
+        GamePanel.isEnemyWalk = true;
         gamePanel.EnemyMove(point);
     }
+
     public static void PlayerAttack() {
         resetFlagsPlayer();
         GamePanel.isPlayerAttack = true;
 
     }
+
     public static void EnemyAttack() {
         resetFlagsEnemy();
         GamePanel.isEnemyAttack1 = true;

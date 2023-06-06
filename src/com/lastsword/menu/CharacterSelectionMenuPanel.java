@@ -31,7 +31,7 @@ public class CharacterSelectionMenuPanel extends JPanel {
     private static int difficultyLevel;
 
     public CharacterSelectionMenuPanel() {
-        setSize(1280,720);
+        setSize(1280, 720);
         setLayout(new BorderLayout());
         CreateTimer();
         AddBackground();
@@ -39,6 +39,7 @@ public class CharacterSelectionMenuPanel extends JPanel {
         UpdateHeroInfo(1);
         createBtns();
     }
+
     private void createBtns() {
         nextButton = new JButton();
         selectButton = new JButton();
@@ -119,6 +120,7 @@ public class CharacterSelectionMenuPanel extends JPanel {
         GetFrames getFrames3 = new GetFrames("src/res/images/sprites/player/samurai_commander/Idle.png", null);
         idleAnimationHero3 = scaleImages(getFrames3.FramesToList(), 2.6);
     }
+
     private void AddBackground() {
         try {
             backgroundImage = ImageIO.read(new File("src/res/images/backgrounds/menubackground/background.png"));
