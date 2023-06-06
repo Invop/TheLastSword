@@ -1,8 +1,11 @@
 package com.lastsword.graphics;
 
+import javax.swing.*;
+
 public class HPBar {
     private final int maxHP;
     private int currentHP;
+    private JLabel hpLabel;
 
     public HPBar(int maxHP) {
         this.maxHP = maxHP;
@@ -30,6 +33,20 @@ public class HPBar {
             currentHP = maxHP;
         }
     }
+    private void updateHpBar(){
+        if (currentHP==maxHP){
+            //for(...) ?
+            hpLabel.setIcon(new ImageIcon(""));
+        } else if (currentHP>=maxHP/2&&currentHP<currentHP) {
+            hpLabel.setIcon(new ImageIcon(""));
+        } else if (currentHP<=maxHP/2&&currentHP>0) {
+            hpLabel.setIcon(new ImageIcon(""));
+        }
+        else if (currentHP==0) {
+            hpLabel.setIcon(new ImageIcon(""));
+        }
+    }
+
 
     public double getPercentage() {
         return (double) currentHP / maxHP * 100;
