@@ -10,18 +10,18 @@ public class Player {
     public Player(int playerIndx) {
         switch (playerIndx) {
             case 1: {
-                playerHp = 1;
+                playerHp = 3;
                 playerId = 1;
                 break;
             }
             case 2: {
-                playerHp = 1;
+                playerHp = 3;
                 playerId = 2;
                 info = "HeroInfo2";
                 break;
             }
             case 3: {
-                playerHp = 1;
+                playerHp = 3;
                 playerId = 3;
                 info = "HeroInfo3";
                 break;

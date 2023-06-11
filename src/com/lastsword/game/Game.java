@@ -9,12 +9,12 @@ import com.lastsword.menu.CharacterSelectionMenuPanel;
 public class Game {
     private GameWindow gameWindow;
     private static GamePanel gamePanel;
-    private AudioPlayer audioPlayer;
-    private int victoryBattleCounter;
-    private int playerScore;
     private static Player selectedPlayer;
-    private final int KilledCounter = 0;
 
+    public static void resetGame(){
+        selectedPlayer = null;
+        gamePanel=null;
+    }
     public static void resetFlagsPlayer() {
         GamePanel.isPlayerAttack = false;
         GamePanel.isPlayerWalk = false;
@@ -40,7 +40,8 @@ public class Game {
     public void StartGame() {
         KeyboardInputs.setCnt();
         if (gamePanel != null) {
-            System.out.println(1111);
+            gamePanel.resetVariables();
+            gamePanel=null;
         }
         gamePanel = new GamePanel();
         gamePanel.setDifficultyLevel(CharacterSelectionMenuPanel.getDifficultyLevel());

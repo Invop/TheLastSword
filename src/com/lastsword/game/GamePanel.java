@@ -6,6 +6,8 @@ import com.lastsword.entities.Player;
 import com.lastsword.graphics.Animation;
 import com.lastsword.graphics.ButtonRenderer;
 import com.lastsword.input.KeyboardInputs;
+import com.lastsword.menu.MainMenuPanel;
+import com.lastsword.menu.MainMenuWindow;
 import com.lastsword.utilities.GetFrames;
 import com.lastsword.utilities.WordGenerator;
 
@@ -26,11 +28,10 @@ import static com.lastsword.utilities.GetFrames.scaleImages;
 
 
 public class GamePanel extends JPanel {
-    private AudioPlayer audioPlayer;
 
     private Animation attackAnimationPlayer,
             ultAnimationPlayer, arrowAnimationPlayer,
-            walkAnimationPlayer, runAnimationPlayer,
+            walkAnimationPlayer,
             hurtAnimationPlayer, deadAnimationPlayer,
             idleAnimationPlayer, currentPA;
     private static Animation attack1AnimationEnemy, attack2AnimationEnemy,
@@ -67,34 +68,77 @@ public class GamePanel extends JPanel {
     public static boolean isCarouselActive = false;
     public static Timer screen_timer;
     private int shiftX = 0;
-    private boolean playAudio;
-    private final int playerShiftX = 0;
-    private final int enemyShiftX = 0;
-    public static int playerPoint = 200, enemyPoint = 200;
+    public static int enemyPoint = 200;
     public static int currentPlayerPoint = -200;
     public static int currentEnemyPoint = 1280;
-    private Game game;
     private static int wordCnt = 0;
     private boolean newWord;
     private static int difficultyLevel;
-    private final int previousHp = 4;
     private int killedCnt = 0;
-    private final boolean shouldDraw = true;
 
     public GamePanel() {
-        game = new Game();
+        keyboardInputs=null;
         keyboardInputs = new KeyboardInputs();
+        player=null;
         player = Game.getSelectedPlayer();
         setBackground(Color.PINK);
         setSize(1280, 720);
         setFocusable(true);
         addKeyListener(keyboardInputs);
         CreateRandomEnemy();
+        RenderRandomBtns();
         InitPlayerFrames();
         AddPlayerAnimations();
-        RenderRandomBtns();
         AddBackground();
         ScreenMove();
+    }
+    public void resetVariables() {
+
+        attackFramesPlayer = null;
+        ultFramesPlayer = null;
+        walkFramesPlayer = null;
+        hurtFramesPlayer = null;
+        deadFramesPlayer = null;
+        idleFramesPlayer = null;
+
+        attackFramesEnemy = null;
+        walkFramesEnemy = null;
+        hurtFramesEnemy = null;
+        deadFramesEnemy = null;
+        idleFramesEnemy = null;
+
+        arrow = null;
+        projectile = null;
+
+        isPlayerAttack = false;
+        isEnemyAttack1 = false;
+        isEnemyAttack2 = false;
+        isPlayerWalk = false;
+        isEnemyWalk = false;
+        isPlayerHurt = false;
+        isEnemyHurt = false;
+        isPlayerDead = false;
+        isEnemyDead = false;
+        isPlayerIdle = false;
+        isEnemyIdle = false;
+        isPlayerUlt = false;
+        isEnemyUlt = false;
+        isPlayerRange = false;
+        isEnemyRange = false;
+        screen_timer = null;
+        animation_timer = null;
+        player = null;
+        keyboardInputs=null;
+
+        shiftX = 0;
+
+        currentPlayerPoint = -200;
+        currentEnemyPoint = 1280;
+
+        wordCnt = 0;
+
+        killedCnt = 0;
+
     }
 
     private Image loadImage(String imagePath) {
@@ -163,10 +207,13 @@ public class GamePanel extends JPanel {
                 if (currentPA.getCurrentFrameIndex() == deadFramesPlayer.size() - 2) {
                     resetFlagsPlayer();
                     resetFlagsEnemy();
-                    game = null;
+                    JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+                    frame.requestFocus();
+                    frame.dispose();
                     String message = "Ви винищили " + killedCnt + " ворогів";
                     JOptionPane.showMessageDialog(this, message);
-                    System.exit(0);
+                    MainMenuPanel mainMenuPanel = new MainMenuPanel();
+                    MainMenuWindow menuWindow = new MainMenuWindow(mainMenuPanel);
                 }
             } else if (isPlayerHurt) {
                 currentPA = hurtAnimationPlayer;
@@ -187,10 +234,10 @@ public class GamePanel extends JPanel {
                 currentEA = attack1AnimationEnemy;
                 Rectangle PlayerRect = currentPA.getBounds(enemyPoint, 280);
                 Rectangle EnemyRect = currentEA.getBounds(enemyPoint, 280);
-                Rectangle EnemyAttack = currentEA.getBounds((int) (enemyPoint - EnemyRect.getWidth() + 20), 280);
+                Rectangle EnemyAttack = currentEA.getBounds((int) (enemyPoint - EnemyRect.getWidth() -5), 280);
 
                 currentEA.update();
-                currentEA.draw(g, (int) (enemyPoint - EnemyRect.getWidth() + 20), 280);
+                currentEA.draw(g, (int) (enemyPoint - EnemyRect.getWidth() -5), 280);
                 if (currentEA.getCurrentFrameIndex() == attackFramesEnemy.size() - 2) {
                     isEnemyIdle = true;
                     isEnemyAttack1 = false;
@@ -202,16 +249,14 @@ public class GamePanel extends JPanel {
                     }
                 } else {
                     if (isCollision(PlayerRect, EnemyAttack)) {
+                        isPlayerHurt = true;
+                        isPlayerIdle = false;
                     } else {
                         isPlayerHurt = false;
                         isPlayerIdle = true;
                     }
                 }
             } else if (isEnemyIdle) {
-                if (newWord) {
-                    RenderRandomBtns();
-                    newWord = false;
-                }
                 currentEA = idleAnimationEnemy;
                 currentEA.update();
                 currentEA.draw(g, currentEnemyPoint, 280);
@@ -253,6 +298,8 @@ public class GamePanel extends JPanel {
 
 
     public static void RenderRandomBtns() {
+        letterValues=null;
+        buttonRenderer=null;
         if (wordCnt == 0) {
             letterValues = new int[]{24, 17, 23, 16, 17};
             buttonRenderer = new ButtonRenderer(letterValues);
@@ -264,14 +311,15 @@ public class GamePanel extends JPanel {
 
             switch (difficultyLevel) {
                 case 0 -> wordGenerator = new WordGenerator(3);
-                case 1, 2 -> wordGenerator = new WordGenerator(4);
+                case 1 -> wordGenerator = new WordGenerator(4);
+                case 2 -> wordGenerator = new WordGenerator(5);
             }
             letterValues = wordGenerator.getLetterValues();
             buttonRenderer = new ButtonRenderer(letterValues);
             KeyboardInputs.setCurrentIndex();
             KeyboardInputs.setButtonRenderer(buttonRenderer);
             KeyboardInputs.setWordToMatch(wordGenerator.getWord());
-            KeyboardInputs.UpdateTimer(difficultyLevel);
+            KeyboardInputs.UpdateTimer();
         }
     }
 
@@ -671,7 +719,7 @@ public class GamePanel extends JPanel {
                     resetFlagsEnemy();
                     isEnemyIdle = true;
                     this.addKeyListener(keyboardInputs);
-                    animation_timer.restart();
+                    RenderRandomBtns();
                 }
                 // Викликаємо метод перерисування
             }
@@ -686,20 +734,15 @@ public class GamePanel extends JPanel {
                 if (shiftX < imageWidth) {
                     shiftX += 15; // Оновлюємо зміщення по осі X
                     this.removeKeyListener(keyboardInputs);
-                    playAudio = true;
                 } else {
-                    System.gc();
                     isCarouselActive = false;
                     CreateRandomEnemy();
-
                     currentEnemyPoint = 1280;
                     Game.PlayerMoveToThePoint(670);
                     Game.EnemyMoveToThePoint(800);
-                    newWord = true;
                     shiftX = 0;
                     x1 = 0;
                     x2 = imageWidth;
-                    screen_timer.restart();
                 }
                 // Викликаємо метод перерисування
             }

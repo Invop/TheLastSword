@@ -29,6 +29,7 @@ public class CharacterSelectionMenuPanel extends JPanel {
     private JButton nextButton;
     private JButton selectButton;
     private static int difficultyLevel;
+    private Game game;
 
     public CharacterSelectionMenuPanel() {
         setSize(1280, 720);
@@ -77,12 +78,19 @@ public class CharacterSelectionMenuPanel extends JPanel {
         });
 
         selectButton.addActionListener(e -> {
-            Game game = new Game();
+            if(game!=null){game = null;}
+            game = new Game();
             game.setSelectedPlayer(new Player(currentHeroIndex));
             JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(MainMenuPanel.getPanel());
             frame.requestFocus();
-            game.StartGame();
             frame.dispose();
+            idleAnimationHero1 = null;
+            idleAnimationHero2 = null;
+            idleAnimationHero3 = null;
+            idleAnimation_timer=null;
+            System.gc();
+            game.StartGame();
+
 
         });
         add(backButton);
