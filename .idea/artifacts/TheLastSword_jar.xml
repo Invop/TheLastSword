@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="TheLastSword:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/TheLastSword_jar</output-path>
+    <root id="archive" name="TheLastSword.jar">
+      <element id="module-output" name="TheLastSword" />
+    </root>
+  </artifact>
+</component>

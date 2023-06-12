@@ -11,34 +11,37 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import static com.lastsword.game.Game.EnemyMoveToThePoint;
-import static com.lastsword.game.GamePanel.*;
+import static com.lastsword.game.GamePanel.isPlayerAttack;
 
 public class KeyboardInputs implements KeyListener {
 
     private static String wordToMatch;
     private static int currentIndex;
     private static ButtonRenderer buttonRenderer;
-    private static int cnt=0;
+    private static int cnt = 0;
     private static Timer timer;
 
-    public KeyboardInputs(){
+    public KeyboardInputs() {
     }
+
+    public static void setCnt() {
+        cnt = 0;
+    }
+
     public static void setCurrentIndex() {
         currentIndex = 0;
     }
 
-    public  static void setWordToMatch(String word) {
+    public static void setWordToMatch(String word) {
         wordToMatch = word;
     }
 
-    public  static void setButtonRenderer(ButtonRenderer btnRenderer) {
+    public static void setButtonRenderer(ButtonRenderer btnRenderer) {
         buttonRenderer = btnRenderer;
     }
-    public static void UpdateTimer(int difficultyLevel){
-        switch (difficultyLevel){
-            case 2:{
-                timer = new Timer(2200, new ActionListener() {
+
+    public static void UpdateTimer() {
+            timer = new Timer(3000, new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     if (currentIndex != wordToMatch.length()) {
                         if (cnt != 0 && !isPlayerAttack) {
@@ -47,28 +50,15 @@ public class KeyboardInputs implements KeyListener {
                         currentIndex = 0;
                     }
                 }
-                });
-            break;
-            }
-            default:{
-                timer = new Timer(3000, new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        if (currentIndex != wordToMatch.length()) {
-                            if (cnt != 0 && !isPlayerAttack) {
-                                Game.EnemyAttack();
-                            }
-                            currentIndex = 0;
-                        }
-                    }
-                });
-                break;
-            }
-        }
-        if(timer!=null) {
+            });
+
+        if (timer != null) {
             timer.restart();
+        } else {
+            timer.start();
         }
-        else{timer.start();}
     }
+
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -91,17 +81,18 @@ public class KeyboardInputs implements KeyListener {
                     buttonRenderer.updateImage(currentIndex - 1);
                     if (currentIndex == wordToMatch.length()) {
                         currentIndex = 0;
-                        if(cnt==0) {
+                        if (cnt == 0) {
                             GamePanel.isCarouselActive = true;
+                        } else {
+                            Game.PlayerAttack();
                         }
-                        else{Game.PlayerAttack();}
                         cnt++;
-                        if(timer!=null) {
+                        if (timer != null) {
                             timer.stop();
                         }
                     }
                 } else {
-                    if(cnt!=0 && !isPlayerAttack) {
+                    if (cnt != 0 && !isPlayerAttack) {
                         Game.EnemyAttack();
                     }
                     currentIndex = 0;

@@ -32,7 +32,7 @@ public class WordGenerator {
     }
 
     private static char getRandomLetter() {
-        int randomValue = random.nextInt(Letter.values().length-2);
+        int randomValue = random.nextInt(Letter.values().length - 2);
         return Letter.values()[randomValue].getCharacter();
     }
 

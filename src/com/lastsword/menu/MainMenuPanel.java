@@ -1,13 +1,8 @@
 package com.lastsword.menu;
 
-import com.lastsword.Main;
-import com.lastsword.game.Game;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -17,7 +12,7 @@ public class MainMenuPanel extends JPanel {
     private Image backgroundImage;
     private int difficultyLevel;
 
-    public MainMenuPanel(){
+    public MainMenuPanel() {
         setLayout(new BorderLayout());
         setSize(1280, 720);
         setFocusable(true);
@@ -25,7 +20,11 @@ public class MainMenuPanel extends JPanel {
         addButtons();
 
     }
-    public static JPanel getPanel(){return selectionMenuPanel;}
+
+    public static JPanel getPanel() {
+        return selectionMenuPanel;
+    }
+
     private void AddBackground() {
         try {
             backgroundImage = ImageIO.read(new File("src/res/images/backgrounds/menubackground/background.png"));
@@ -33,6 +32,7 @@ public class MainMenuPanel extends JPanel {
             e.printStackTrace();
         }
     }
+
     private void addButtons() {
         try {
             // Button 1
@@ -86,6 +86,7 @@ public class MainMenuPanel extends JPanel {
             e.printStackTrace();
         }
     }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
