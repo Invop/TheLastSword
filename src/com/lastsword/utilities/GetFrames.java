@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Get frames.
+ */
 public class GetFrames {
     private String filePath;
     private final String fileIdlePath;
@@ -16,15 +19,31 @@ public class GetFrames {
     private BufferedImage spriteIdleSheet;
     private BufferedImage spriteSheet;
 
+    /**
+     * Instantiates a new Get frames.
+     *
+     * @param filePath     the file path
+     * @param fileIdlePath the file idle path
+     */
     public GetFrames(String filePath, String fileIdlePath) {
         this.filePath = filePath;
         this.fileIdlePath = fileIdlePath;
     }
 
+    /**
+     * Instantiates a new Get frames.
+     *
+     * @param fileIdlePath the file idle path
+     */
     public GetFrames(String fileIdlePath) {
         this.fileIdlePath = fileIdlePath;
     }
 
+    /**
+     * Frames to list list.
+     *
+     * @return the list
+     */
     public List<BufferedImage> FramesToList() {
         try {
             frames = new ArrayList<>();
@@ -46,6 +65,11 @@ public class GetFrames {
         return null;
     }
 
+    /**
+     * Gets frame.
+     *
+     * @return the frame
+     */
     public BufferedImage getFrame() {
         try {
             if (fileIdlePath != null) {
@@ -58,6 +82,13 @@ public class GetFrames {
         return null;
     }
 
+    /**
+     * Scale image buffered image.
+     *
+     * @param image the image
+     * @param scale the scale
+     * @return the buffered image
+     */
     public static BufferedImage scaleImage(BufferedImage image, double scale) {
         double scaledWidth = image.getWidth() * scale;
         double scaledHeight = image.getHeight() * scale;
@@ -74,6 +105,13 @@ public class GetFrames {
         return scaledImage;
     }
 
+    /**
+     * Scale images list.
+     *
+     * @param images the images
+     * @param scale  the scale
+     * @return the list
+     */
     public static List<BufferedImage> scaleImages(List<BufferedImage> images, double scale) {
         List<BufferedImage> scaledImages = new ArrayList<>();
 

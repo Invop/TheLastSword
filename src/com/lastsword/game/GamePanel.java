@@ -1,6 +1,5 @@
 package com.lastsword.game;
 
-import com.lastsword.audio.AudioPlayer;
 import com.lastsword.entities.Enemy;
 import com.lastsword.entities.Player;
 import com.lastsword.graphics.Animation;
@@ -27,6 +26,9 @@ import static com.lastsword.utilities.GetFrames.scaleImage;
 import static com.lastsword.utilities.GetFrames.scaleImages;
 
 
+/**
+ * The type Game panel.
+ */
 public class GamePanel extends JPanel {
 
     private Animation attackAnimationPlayer,
@@ -52,34 +54,97 @@ public class GamePanel extends JPanel {
     private final Random random = new Random();
     private int randomEnemy;
 
-    public static boolean isPlayerAttack = false, isEnemyAttack1 = false, isEnemyAttack2 = false,
-            isPlayerWalk = false, isEnemyWalk = false,
-            isPlayerHurt = false, isEnemyHurt = false,
-            isPlayerDead = false, isEnemyDead = false,
-            isPlayerIdle = false, isEnemyIdle = false,
-            isPlayerUlt = false, isEnemyUlt = false,
-            isPlayerRange = false, isEnemyRange = false;
+    /**
+     * The constant isPlayerAttack.
+     */
+    public static boolean isPlayerAttack = false, /**
+     * The Is enemy attack 1.
+     */
+    isEnemyAttack1 = false, /**
+     * The Is enemy attack 2.
+     */
+    isEnemyAttack2 = false,
+    /**
+     * The Is player walk.
+     */
+    isPlayerWalk = false, /**
+     * The Is enemy walk.
+     */
+    isEnemyWalk = false,
+    /**
+     * The Is player hurt.
+     */
+    isPlayerHurt = false, /**
+     * The Is enemy hurt.
+     */
+    isEnemyHurt = false,
+    /**
+     * The Is player dead.
+     */
+    isPlayerDead = false, /**
+     * The Is enemy dead.
+     */
+    isEnemyDead = false,
+    /**
+     * The Is player idle.
+     */
+    isPlayerIdle = false, /**
+     * The Is enemy idle.
+     */
+    isEnemyIdle = false,
+    /**
+     * The Is player ult.
+     */
+    isPlayerUlt = false, /**
+     * The Is enemy ult.
+     */
+    isEnemyUlt = false,
+    /**
+     * The Is player range.
+     */
+    isPlayerRange = false, /**
+     * The Is enemy range.
+     */
+    isEnemyRange = false;
     //бг
     private final int imageWidth = 1280;
     private final int imageHeight = 720;
     private Image backgroundImage;
     private int x1 = 0;
     private int x2 = imageWidth;
+    /**
+     * The constant isCarouselActive.
+     */
     public static boolean isCarouselActive = false;
+    /**
+     * The constant screen_timer.
+     */
     public static Timer screen_timer;
     private int shiftX = 0;
+    /**
+     * The constant enemyPoint.
+     */
     public static int enemyPoint = 200;
+    /**
+     * The constant currentPlayerPoint.
+     */
     public static int currentPlayerPoint = -200;
+    /**
+     * The constant currentEnemyPoint.
+     */
     public static int currentEnemyPoint = 1280;
     private static int wordCnt = 0;
     private boolean newWord;
     private static int difficultyLevel;
     private int killedCnt = 0;
 
+    /**
+     * Instantiates a new Game panel.
+     */
     public GamePanel() {
-        keyboardInputs=null;
+        keyboardInputs = null;
         keyboardInputs = new KeyboardInputs();
-        player=null;
+        player = null;
         player = Game.getSelectedPlayer();
         setBackground(Color.PINK);
         setSize(1280, 720);
@@ -92,6 +157,10 @@ public class GamePanel extends JPanel {
         AddBackground();
         ScreenMove();
     }
+
+    /**
+     * Reset variables.
+     */
     public void resetVariables() {
 
         attackFramesPlayer = null;
@@ -128,7 +197,7 @@ public class GamePanel extends JPanel {
         screen_timer = null;
         animation_timer = null;
         player = null;
-        keyboardInputs=null;
+        keyboardInputs = null;
 
         shiftX = 0;
 
@@ -146,6 +215,9 @@ public class GamePanel extends JPanel {
         return icon.getImage();
     }
 
+    /**
+     * Add background.
+     */
     public void AddBackground() {
         try {
             backgroundImage = ImageIO.read(new File("src/res/images/backgrounds/Battleground2/Battleground2.png"));
@@ -154,6 +226,13 @@ public class GamePanel extends JPanel {
         }
     }
 
+    /**
+     * Is collision boolean.
+     *
+     * @param rect1 the rect 1
+     * @param rect2 the rect 2
+     * @return the boolean
+     */
     public boolean isCollision(Rectangle rect1, Rectangle rect2) {
         return rect1.intersects(rect2);
     }
@@ -234,10 +313,10 @@ public class GamePanel extends JPanel {
                 currentEA = attack1AnimationEnemy;
                 Rectangle PlayerRect = currentPA.getBounds(enemyPoint, 280);
                 Rectangle EnemyRect = currentEA.getBounds(enemyPoint, 280);
-                Rectangle EnemyAttack = currentEA.getBounds((int) (enemyPoint - EnemyRect.getWidth() -5), 280);
+                Rectangle EnemyAttack = currentEA.getBounds((int) (enemyPoint - EnemyRect.getWidth() - 5), 280);
 
                 currentEA.update();
-                currentEA.draw(g, (int) (enemyPoint - EnemyRect.getWidth() -5), 280);
+                currentEA.draw(g, (int) (enemyPoint - EnemyRect.getWidth() - 5), 280);
                 if (currentEA.getCurrentFrameIndex() == attackFramesEnemy.size() - 2) {
                     isEnemyIdle = true;
                     isEnemyAttack1 = false;
@@ -297,9 +376,12 @@ public class GamePanel extends JPanel {
     }
 
 
+    /**
+     * Render random btns.
+     */
     public static void RenderRandomBtns() {
-        letterValues=null;
-        buttonRenderer=null;
+        letterValues = null;
+        buttonRenderer = null;
         if (wordCnt == 0) {
             letterValues = new int[]{24, 17, 23, 16, 17};
             buttonRenderer = new ButtonRenderer(letterValues);
@@ -684,6 +766,9 @@ public class GamePanel extends JPanel {
         projectile = scaleImage(img, 2.6);
     }
 
+    /**
+     * Init enemy frames.
+     */
     public static void InitEnemyFrames() {
         AddEnemyAttackFrames();
         AddEnemyWalkFrames();
@@ -693,6 +778,11 @@ public class GamePanel extends JPanel {
         AddEnemyProjectileFrame();
     }
 
+    /**
+     * Player move.
+     *
+     * @param point the point
+     */
     public void PlayerMove(int point) {
         animation_timer = new Timer(20, e -> {
             if (isPlayerWalk) {
@@ -710,6 +800,11 @@ public class GamePanel extends JPanel {
         animation_timer.start();
     }
 
+    /**
+     * Enemy move.
+     *
+     * @param point the point
+     */
     public void EnemyMove(int point) {
         animation_timer = new Timer(20, e -> {
             if (isEnemyWalk) {
@@ -762,6 +857,9 @@ public class GamePanel extends JPanel {
         idleAnimationPlayer = new Animation(idleFramesPlayer, defaultAnimationSpeed, true);
     }
 
+    /**
+     * Add enemy animation.
+     */
     public static void AddEnemyAnimation() {
         attack1AnimationEnemy = new Animation(attackFramesEnemy, defaultAnimationSpeed + 200, true);
         walkAnimationEnemy = new Animation(walkFramesEnemy, defaultAnimationSpeed, true);
@@ -778,6 +876,11 @@ public class GamePanel extends JPanel {
         AddEnemyAnimation();
     }
 
+    /**
+     * Sets difficulty level.
+     *
+     * @param difficultyLevel the difficulty level
+     */
     public void setDifficultyLevel(int difficultyLevel) {
         GamePanel.difficultyLevel = difficultyLevel;
     }

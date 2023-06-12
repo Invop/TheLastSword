@@ -4,9 +4,17 @@ import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * The type Audio player.
+ */
 public class AudioPlayer {
     private Clip clip;
 
+    /**
+     * Instantiates a new Audio player.
+     *
+     * @param path the path
+     */
     public AudioPlayer(String path) {
         play(path);
     }
@@ -28,6 +36,11 @@ public class AudioPlayer {
         }
     }
 
+    /**
+     * Sets loop.
+     *
+     * @param loop the loop
+     */
     public void setLoop(boolean loop) {
         if (clip != null) {
             if (loop) {
@@ -38,6 +51,9 @@ public class AudioPlayer {
         }
     }
 
+    /**
+     * Play.
+     */
     public void play() {
         if (clip != null && !clip.isRunning()) {
             clip.setFramePosition(0);
@@ -45,6 +61,9 @@ public class AudioPlayer {
         }
     }
 
+    /**
+     * Stop.
+     */
     public void stop() {
         if (clip != null) {
             clip.stop();

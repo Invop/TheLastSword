@@ -9,10 +9,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
 
+/**
+ * The type Settings panel.
+ */
 public class SettingsPanel extends JPanel {
     private Image backgroundImage;
     private static int value;
 
+    /**
+     * Instantiates a new Settings panel.
+     */
     public SettingsPanel() {
         setLayout(new BorderLayout());
         setSize(1280, 720);

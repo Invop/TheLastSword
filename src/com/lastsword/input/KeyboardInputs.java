@@ -13,6 +13,9 @@ import java.awt.event.KeyListener;
 
 import static com.lastsword.game.GamePanel.isPlayerAttack;
 
+/**
+ * The type Keyboard inputs.
+ */
 public class KeyboardInputs implements KeyListener {
 
     private static String wordToMatch;
@@ -21,36 +24,58 @@ public class KeyboardInputs implements KeyListener {
     private static int cnt = 0;
     private static Timer timer;
 
+    /**
+     * Instantiates a new Keyboard inputs.
+     */
     public KeyboardInputs() {
     }
 
+    /**
+     * Sets cnt.
+     */
     public static void setCnt() {
         cnt = 0;
     }
 
+    /**
+     * Sets current index.
+     */
     public static void setCurrentIndex() {
         currentIndex = 0;
     }
 
+    /**
+     * Sets word to match.
+     *
+     * @param word the word
+     */
     public static void setWordToMatch(String word) {
         wordToMatch = word;
     }
 
+    /**
+     * Sets button renderer.
+     *
+     * @param btnRenderer the btn renderer
+     */
     public static void setButtonRenderer(ButtonRenderer btnRenderer) {
         buttonRenderer = btnRenderer;
     }
 
+    /**
+     * Update timer.
+     */
     public static void UpdateTimer() {
-            timer = new Timer(3000, new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    if (currentIndex != wordToMatch.length()) {
-                        if (cnt != 0 && !isPlayerAttack) {
-                            Game.EnemyAttack();
-                        }
-                        currentIndex = 0;
+        timer = new Timer(3000, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (currentIndex != wordToMatch.length()) {
+                    if (cnt != 0 && !isPlayerAttack) {
+                        Game.EnemyAttack();
                     }
+                    currentIndex = 0;
                 }
-            });
+            }
+        });
 
         if (timer != null) {
             timer.restart();

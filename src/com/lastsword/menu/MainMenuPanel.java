@@ -6,12 +6,18 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * The type Main menu panel.
+ */
 public class MainMenuPanel extends JPanel {
     private static CharacterSelectionMenuPanel selectionMenuPanel;
     private static SettingsPanel settingsPanel;
     private Image backgroundImage;
     private int difficultyLevel;
 
+    /**
+     * Instantiates a new Main menu panel.
+     */
     public MainMenuPanel() {
         setLayout(new BorderLayout());
         setSize(1280, 720);
@@ -21,6 +27,11 @@ public class MainMenuPanel extends JPanel {
 
     }
 
+    /**
+     * Gets panel.
+     *
+     * @return the panel
+     */
     public static JPanel getPanel() {
         return selectionMenuPanel;
     }
@@ -95,10 +106,20 @@ public class MainMenuPanel extends JPanel {
         }
     }
 
+    /**
+     * Sets difficulty level.
+     *
+     * @param difficultyLevel the difficulty level
+     */
     public void setDifficultyLevel(int difficultyLevel) {
         this.difficultyLevel = difficultyLevel;
     }
 
+    /**
+     * Gets difficulty level.
+     *
+     * @return the difficulty level
+     */
     public int getDifficultyLevel() {
         return difficultyLevel;
     }

@@ -2,11 +2,19 @@ package com.lastsword.utilities;
 
 import java.util.Random;
 
+/**
+ * The type Word generator.
+ */
 public class WordGenerator {
     private static final Random random = new Random();
     private final String word;
     private final int[] letterValues;
 
+    /**
+     * Instantiates a new Word generator.
+     *
+     * @param lenght the lenght
+     */
     public WordGenerator(int lenght) {
         word = generateWord(lenght);
         letterValues = convertWordToLetterValues(word);
@@ -36,10 +44,20 @@ public class WordGenerator {
         return Letter.values()[randomValue].getCharacter();
     }
 
+    /**
+     * Get letter values int [ ].
+     *
+     * @return the int [ ]
+     */
     public int[] getLetterValues() {
         return letterValues;
     }
 
+    /**
+     * Gets word.
+     *
+     * @return the word
+     */
     public String getWord() {
         return word;
     }

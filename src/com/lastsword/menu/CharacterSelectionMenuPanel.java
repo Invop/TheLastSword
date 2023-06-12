@@ -15,6 +15,9 @@ import java.util.List;
 
 import static com.lastsword.utilities.GetFrames.scaleImages;
 
+/**
+ * The type Character selection menu panel.
+ */
 public class CharacterSelectionMenuPanel extends JPanel {
     private List<BufferedImage> idleAnimationHero1;
     private List<BufferedImage> idleAnimationHero2;
@@ -31,6 +34,9 @@ public class CharacterSelectionMenuPanel extends JPanel {
     private static int difficultyLevel;
     private Game game;
 
+    /**
+     * Instantiates a new Character selection menu panel.
+     */
     public CharacterSelectionMenuPanel() {
         setSize(1280, 720);
         setLayout(new BorderLayout());
@@ -78,7 +84,9 @@ public class CharacterSelectionMenuPanel extends JPanel {
         });
 
         selectButton.addActionListener(e -> {
-            if(game!=null){game = null;}
+            if (game != null) {
+                game = null;
+            }
             game = new Game();
             game.setSelectedPlayer(new Player(currentHeroIndex));
             JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(MainMenuPanel.getPanel());
@@ -87,7 +95,7 @@ public class CharacterSelectionMenuPanel extends JPanel {
             idleAnimationHero1 = null;
             idleAnimationHero2 = null;
             idleAnimationHero3 = null;
-            idleAnimation_timer=null;
+            idleAnimation_timer = null;
             System.gc();
             game.StartGame();
 
@@ -156,10 +164,20 @@ public class CharacterSelectionMenuPanel extends JPanel {
         idleAnimation.draw(g, x, y);
     }
 
+    /**
+     * Sets difficulty level.
+     *
+     * @param difficult the difficult
+     */
     public void setDifficultyLevel(int difficult) {
         difficultyLevel = difficult;
     }
 
+    /**
+     * Gets difficulty level.
+     *
+     * @return the difficulty level
+     */
     public static int getDifficultyLevel() {
         return difficultyLevel;
     }
